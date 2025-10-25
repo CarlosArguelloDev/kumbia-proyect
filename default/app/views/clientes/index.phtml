@@ -1,0 +1,33 @@
+<?= Bform::btn_agregar("clientes/registrar", "Registrar") ?>
+<table class="table table-sm table-hover table-striped">
+    <thead>
+    <tr>
+        <th>Imagen</th>
+        <th>Acción</th>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Email</th>
+        <th>Dirección</th>
+        <th>Tipo</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($clientes as $c): ?>
+        <tr>
+            <td>
+                <?= Bhtml::img("clientes/{$c->id}.png", "Imagen {$c->nombre}", ["width" => "80px"])?>
+            </td>
+            <td>
+                <?= Html::link("clientes/ver/{$c->id}", "ver") ?>
+            </td>
+            <td><?= $c->nombre ?></td>
+            <td><?= $c->telefono ?></td>
+            <td><?= $c->email ?></td>
+            <td><?= $c->direccion ?></td>
+            <td><?= $c->tipo ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+
+

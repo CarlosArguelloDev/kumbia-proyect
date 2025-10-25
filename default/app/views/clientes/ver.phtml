@@ -1,0 +1,47 @@
+<?= Bhtml::img("clientes/{$cliente->id}.png", "Imagen {$cliente->nombre}", ["width" => "256px"])?>
+<table class="table table-sm table-hover table-striped">
+    <thead>
+    <tr>
+        <td><b>Cliente</b></td>
+        <td><b><?= $cliente->nombre ?> </b></td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td><strong>Teléfono</strong></td>
+        <td><?= $cliente->telefono ?></td>
+    </tr>
+    <tr>
+        <td><strong>Email</strong></td>
+        <td><?= $cliente->email ?></td>
+    </tr>
+    <tr>
+        <td><strong>Dirección</strong></td>
+        <td><?= $cliente->direccion ?></td>
+    </tr>
+    <tr>
+        <td><strong>Tipo</strong></td>
+        <td><?= $cliente->tipo ?></td>
+    </tr>
+    </tbody>
+</table>
+<h3>Compras</h3>
+<table class="table table-hover table-striped table-sm">
+    <thead>
+    <tr>
+        <th>Vendedor</th>
+        <th>Total</th>
+        <th>notas</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($cliente->getCompras() as $v): ?>
+        <tr>
+            <td><?= $v->getVendedor()->nombre ?></td>
+            <td><?= $v->total ?></td>
+            <td><?= $v->notas ?></td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
+<?= Bform::btn_editar("clientes/editar/{$cliente->id}", "Editar") ?>

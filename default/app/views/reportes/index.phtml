@@ -1,0 +1,67 @@
+<?php
+// (Opcional) catálogos rápidos para mostrar texto en vez de IDs
+$prioridades = [1 => 'Baja', 2 => 'Media', 3 => 'Alta'];
+$estados     = [1 => 'Pendiente', 2 => 'En Proceso', 3 => 'Cerrado'];
+?>
+
+<button type="button" class="btn btn-primary d-inline-flex"><i class="ti ti-plus"></i>Realizar reporte</button>
+<br><br>
+
+<?php foreach ($reportes as $r): ?>
+    <div class="card overflow-hidden mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <!-- Imagen: asumiendo /public/img/reportes/{id}.jpg -->
+                <img
+                    src="<?= PUBLIC_PATH ?>storage/reportes/<?= $r->id ?>.jpg"
+                    alt="Imagen Reporte <?= $r->id ?>"
+                    width="256"
+                    class="img-fluid"
+                >
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <!-- Titulo del reporte + badges -->
+                    <h5 class="card-title">
+                        <?= $r->titulo ?>
+                        <?php if (!empty($r->diametro)): ?>
+                            <span class="badge bg-light-warning">
+                            <i class="ti ti-ruler-2"></i>
+                            Diámetro: <?= $r->diametro ?>cm
+                        </span>
+                        <?php endif; ?>
+                        <span class="badge bg-info">
+                        <i class="ti ti-clock"></i>
+                        Estado: <?= $estados[$r->estado_id] ?? $r->estado_id ?>
+                    </span>
+                        <span class="badge bg-danger">
+                        <i class="ti ti-arrow-up-right"></i>
+                        Prioridad: <?= $prioridades[$r->prioridad_id] ?? $r->prioridad_id ?>
+                    </span>
+                    </h5>
+
+                    <?php if (!empty($r->descripcion)): ?>
+                        <p class="card-text"><?= $r->descripcion ?></p>
+                    <?php endif; ?>
+
+                    <p class="card-text">
+                        <i class="ti ti-calendar-event"></i>
+                        <small class="text-muted">
+                            <?= date('m/d/Y', strtotime($r->created_at)) ?>
+                        </small>
+
+                        <?php if (!empty($r->direccion)): ?>
+                            <i class="ti ti-map-pin ms-2"></i>
+                            <small class="text-muted"><?= $r->direccion ?></small>
+                        <?php endif; ?>
+
+                        <br><br>
+                        <!-- Links de ejemplo (como en tu snippet) -->
+                        <a href="#!" class="card-link">Ver Más</a>
+                        <a href="#!" class="card-link">Comentarios</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>

@@ -1,0 +1,56 @@
+<div class="row">
+    <div class="col-md-6">
+        <?= Form::open() ?>
+
+        <?= Bform::text_label("Título", "reporte.titulo") ?>
+        <br>
+
+        <?= Bform::text_label("Dirección", "reporte.direccion") ?>
+        <br>
+
+        <?= Bform::text_label("Diámetro (cm)", "reporte.diametro") ?>
+        <br>
+
+        <?= Form::select("Prioridad", "reporte.prioridad_id", [
+            1 => 'Baja',
+            2 => 'Media',
+            3 => 'Alta'
+        ]) ?>
+        <br>
+
+        <!-- Si al crear quieres que siempre sea Pendiente (1): -->
+        <?= Form::hidden("reporte.estado_id", "1") ?>
+
+        <button type="button" class="btn btn-primary d-inline-flex"><i class="ti ti-device-floppy"></i>Guardar</button>
+
+    </div>
+
+    <div class="col-md-6">
+        <?= Bform::text_label("Descripción", "reporte.descripcion") ?>
+        <br>
+
+        <?= Bform::text_label("Latitud", "reporte.latitud", ["step"=>"0.0000001"]) ?>
+        <br>
+
+        <?= Bform::text_label("Longitud", "reporte.longitud", ["step"=>"0.0000001"]) ?>
+        <br>
+
+        <!-- Si quisieras seleccionar estado manualmente:
+        <?= Form::select("Estado", "reporte.estado_id", [
+            1 => 'Pendiente',
+            2 => 'En Proceso',
+            3 => 'Resuelto'
+        ]) ?>
+        <br>
+
+        -->
+        <div class="card-body">
+            <form action="../assets/json/file-upload.php" class="dropzone">
+                <div class="fallback">
+                    <input name="file" type="file" multiple>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<?= Form::close() ?>

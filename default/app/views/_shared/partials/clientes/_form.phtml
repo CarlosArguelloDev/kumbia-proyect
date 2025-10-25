@@ -1,0 +1,19 @@
+<div class="row">
+    <div class="col-md-6">
+        <?= Form::open() ?>
+
+        <?= Bform::text_label("Nombre", "cliente.nombre") ?>
+            <br>
+        <?= Bform::text_label("Teléfono", "cliente.telefono") ?>
+        <br>
+        <?= Bform::btn_aceptar("Aceptar") ?>
+    </div>
+    <div class="col-md-6">
+        <?= Bform::text_label("Email", "cliente.email") ?>
+        <br>
+        <?= Bform::text_label("Dirección", "cliente.direccion") ?>
+        <br>
+        <?= Bform::text_label("Tipo", "cliente.tipo") ?>
+    </div>
+
+</div>
