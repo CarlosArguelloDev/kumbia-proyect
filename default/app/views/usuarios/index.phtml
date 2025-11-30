@@ -1,0 +1,65 @@
+<h1><?= $title ?></h1>
+
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <a href="<?= PUBLIC_PATH ?>admin/dashboard" class="btn btn-light">
+            <i class="ti ti-arrow-left me-1"></i> Volver al Dashboard
+        </a>
+    </div>
+    <div>
+        <a href="<?= PUBLIC_PATH ?>usuarios/crear" class="btn btn-primary">
+            <i class="ti ti-plus me-1"></i> Nuevo Usuario
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Activo</th>
+                        <th>Fecha Registro</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($usuarios as $u): ?>
+                        <tr>
+                            <td><?= $u->id ?></td>
+                            <td><?= $u->nombre ?></td>
+                            <td><?= $u->email ?></td>
+                            <td><?= $u->telefono ?? '-' ?></td>
+                            <td>
+                                <?php if ($u->activo == 1): ?>
+                                    <span class="badge bg-success">Activo</span>
+                                <?php else: ?>
+                                    <span class="badge bg-danger">Inactivo</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <small><?= date('d/m/Y', strtotime($u->created_at)) ?></small>
+                            </td>
+                            <td>
+                                <a href="<?= PUBLIC_PATH ?>usuarios/editar/<?= $u->id ?>"
+                                    class="btn btn-sm btn-light-warning" title="Editar">
+                                    <i class="ti ti-edit"></i>
+                                </a>
+                                <a href="<?= PUBLIC_PATH ?>usuarios/eliminar/<?= $u->id ?>"
+                                    class="btn btn-sm btn-light-danger" title="Eliminar"
+                                    onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                    <i class="ti ti-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,87 @@
+<h1><?= $title ?></h1>
+
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        <a href="<?= PUBLIC_PATH ?>admin/dashboard" class="btn btn-light">
+            <i class="ti ti-arrow-left me-1"></i> Volver al Dashboard
+        </a>
+    </div>
+    <div>
+        <span class="badge bg-primary">Total: <?= count($reportes) ?> reportes</span>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Usuario</th>
+                        <th>Estado</th>
+                        <th>Prioridad</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($reportes as $r): ?>
+                        <tr>
+                            <td><?= $r->id ?></td>
+                            <td><?= $r->titulo ?></td>
+                            <td><?= $r->getUsuarios()->nombre ?></td>
+                            <td>
+                                <!-- Cambiar Estado -->
+                                <form method="post" action="<?= PUBLIC_PATH ?>reportes/cambiar_estado/<?= $r->id ?>"
+                                    class="d-inline">
+                                    <select name="estado_id" class="form-select form-select-sm"
+                                        onchange="this.form.submit()" style="width: auto;">
+                                        <?php foreach ($estados as $e): ?>
+                                            <option value="<?= $e->id ?>" <?= $r->estado_id == $e->id ? 'selected' : '' ?>>
+                                                <?= $e->nombre ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                <!-- Cambiar Prioridad -->
+                                <form method="post" action="<?= PUBLIC_PATH ?>reportes/cambiar_prioridad/<?= $r->id ?>"
+                                    class="d-inline">
+                                    <select name="prioridad_id" class="form-select form-select-sm"
+                                        onchange="this.form.submit()" style="width: auto;">
+                                        <?php foreach ($prioridades as $p): ?>
+                                            <option value="<?= $p->id ?>" <?= $r->prioridad_id == $p->id ? 'selected' : '' ?>>
+                                                <?= $p->nombre ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </form>
+                            </td>
+                            <td>
+                                <small><?= date('d/m/Y', strtotime($r->created_at)) ?></small>
+                            </td>
+                            <td>
+                                <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>" 
+                                   class="btn btn-sm btn-light-info" title="Ver">
+                                    <i class="ti ti-eye"></i>
+                                </a>
+                                <a href="<?= PUBLIC_PATH ?>reportes/editar/<?= $r->id ?>" 
+                                   class="btn btn-sm btn-light-warning" title="Editar">
+                                    <i class="ti ti-edit"></i>
+                                </a>
+                                <a href="<?= PUBLIC_PATH ?>reportes/eliminar/<?= $r->id ?>" 
+                                   class="btn btn-sm btn-light-danger" title="Eliminar"
+                                   onclick="return confirm('¿Estás seguro de eliminar este reporte?')">
+                                    <i class="ti ti-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

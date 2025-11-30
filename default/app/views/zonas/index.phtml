@@ -1,0 +1,138 @@
+<h1><?= $title ?></h1>
+
+<div class="row mb-3">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <i class="ti ti-info-circle"></i>
+            <strong>Semaforo de Prioridades:</strong>
+            <span class="badge bg-danger ms-2"><i class="ti ti-circle-filled"></i> Baja</span>
+            <span class="badge bg-warning ms-2"><i class="ti ti-circle-filled"></i> Media</span>
+            <span class="badge bg-success ms-2"><i class="ti ti-circle-filled"></i> Alta</span>
+        </div>
+    </div>
+</div>
+
+<!-- Card 1: Mapa General -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="ti ti-map-2"></i> Mapa General de San Juan del Río</h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">Vista completa de todos los reportes en San Juan del Río</p>
+        <div id="mapGeneral" style="height: 500px; border-radius: 8px;"></div>
+    </div>
+</div>
+
+<!-- Card 2: Zona Oriente -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="ti ti-map-pin"></i> Zona Oriente</h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">Reportes en la zona oriente de San Juan del Río</p>
+        <div id="mapOriente" style="height: 500px; border-radius: 8px;"></div>
+    </div>
+</div>
+
+<!-- Card 3: Zona Centro -->
+<div class="card mb-4">
+    <div class="card-header">
+        <h5><i class="ti ti-map-pin"></i> Zona Centro</h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted">Reportes en la zona centro de San Juan del Río</p>
+        <div id="mapCentro" style="height: 500px; border-radius: 8px;"></div>
+    </div>
+</div>
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+    // Datos de reportes desde PHP
+    const reportes = <?= json_encode(array_map(function ($r) {
+        return [
+            'id' => $r->id,
+            'titulo' => $r->titulo,
+            'lat' => (float) $r->latitud,
+            'lng' => (float) $r->longitud,
+            'prioridad' => $r->prioridad_id,
+            'prioridad_nombre' => $r->getPrioridades()->nombre,
+            'estado' => $r->getEstados()->nombre
+        ];
+    }, $reportes)) ?>;
+
+    // Coordenadas y configuración de zonas
+    const zonas = {
+        general: {
+            centro: [20.3881, -99.9971],
+            zoom: 13
+        },
+        oriente: {
+            centro: [20.3950, -99.9700],
+            zoom: 14
+        },
+        centro: {
+            centro: [20.3881, -100.0050],
+            zoom: 15
+        }
+    };
+
+    function getColorPrioridad(prioridad_id) {
+        switch (parseInt(prioridad_id)) {
+            case 1: return '#dc3545';
+            case 2: return '#ffc107';
+            case 3: return '#28a745';
+            default: return '#6c757d';
+        }
+    }
+
+    function crearMapa(elementId, zona) {
+        const map = L.map(elementId).setView(zonas[zona].centro, zonas[zona].zoom);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Agregar marcadores de reportes
+        reportes.forEach(r => {
+            if (r.lat && r.lng) {
+
+                let mostrar = true;
+
+
+                if (mostrar) {
+                    const marker = L.circleMarker([r.lat, r.lng], {
+                        radius: 8,
+                        fillColor: getColorPrioridad(r.prioridad),
+                        color: '#fff',
+                        weight: 2,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map);
+
+                    marker.bindPopup(`
+                        <strong>${r.titulo}</strong><br>
+                        <span class="badge bg-secondary">${r.estado}</span>
+                        <span class="badge" style="background-color: ${getColorPrioridad(r.prioridad)}">${r.prioridad_nombre}</span><br>
+                        <a href="<?= PUBLIC_PATH ?>reportes/ver/${r.id}" target="_blank">Ver detalles</a>
+                    `);
+                }
+            }
+        });
+
+        return map;
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        crearMapa('mapGeneral', 'general');
+        crearMapa('mapOriente', 'oriente');
+        crearMapa('mapCentro', 'centro');
+    });
+</script>

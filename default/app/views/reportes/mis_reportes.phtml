@@ -45,21 +45,20 @@
                                         </td>
                                         <td class="text-center">
                                             <!-- Botones de Acción -->
-                                            <div class="btn-group" role="group">
-                                                <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>"
-                                                    class="btn btn-sm btn-light-info" title="Ver">
-                                                    <i class="ti ti-eye"></i>
-                                                </a>
-                                                <a href="<?= PUBLIC_PATH ?>reportes/editar/<?= $r->id ?>"
-                                                    class="btn btn-sm btn-light-warning" title="Editar">
-                                                    <i class="ti ti-edit"></i>
-                                                </a>
-                                                <button
-                                                    onclick="confirmarEliminar(<?= $r->id ?>, '<?= addslashes($r->titulo) ?>')"
-                                                    class="btn btn-sm btn-light-danger" title="Eliminar">
-                                                    <i class="ti ti-trash"></i>
-                                                </button>
-                                            </div>
+
+                                            <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>"
+                                                class="btn btn-sm btn-light-info" title="Ver">
+                                                <i class="ti ti-eye"></i>
+                                            </a>
+                                            <a href="<?= PUBLIC_PATH ?>reportes/editar/<?= $r->id ?>"
+                                                class="btn btn-sm btn-light-warning" title="Editar">
+                                                <i class="ti ti-edit"></i>
+                                            </a>
+                                            <button onclick="confirmarEliminar(<?= $r->id ?>, '<?= addslashes($r->titulo) ?>')"
+                                                class="btn btn-sm btn-light-danger" title="Eliminar">
+                                                <i class="ti ti-trash"></i>
+                                            </button>
+
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

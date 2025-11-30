@@ -1,0 +1,54 @@
+<h1><?= $title ?></h1>
+
+<div class="mb-3">
+    <a href="<?= PUBLIC_PATH ?>admin/dashboard" class="btn btn-light">
+        <i class="ti ti-arrow-left me-1"></i> Volver al Dashboard
+    </a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Usuario</th>
+                        <th>Reporte</th>
+                        <th>Comentario</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($comentarios as $c): ?>
+                        <tr>
+                            <td><?= $c->id ?></td>
+                            <td><?= $c->getUsuarios()->nombre ?></td>
+                            <td>
+                                <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $c->reporte_id ?>">
+                                    #<?= $c->reporte_id ?>
+                                </a>
+                            </td>
+                            <td><?= $c->texto ?></td>
+                            <td>
+                                <small><?= date('d/m/Y H:i', strtotime($c->created_at)) ?></small>
+                            </td>
+                            <td>
+                                <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $c->reporte_id ?>"
+                                    class="btn btn-sm btn-light-info" title="Ver Reporte">
+                                    <i class="ti ti-eye"></i>
+                                </a>
+                                <a href="<?= PUBLIC_PATH ?>comentarios/eliminar/<?= $c->id ?>"
+                                    class="btn btn-sm btn-light-danger" title="Eliminar"
+                                    onclick="return confirm('¿Estás seguro de eliminar este comentario?')">
+                                    <i class="ti ti-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

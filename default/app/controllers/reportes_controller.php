@@ -74,20 +74,25 @@ class ReportesController extends AppController
         if (Input::hasPost("reporte")) {
             $params = Input::post("reporte");
 
-            if ($this->reporte->update($params)) {
-                // Si se subió una nueva foto
-                if (!empty($_FILES["foto"]["name"])) {
-                    $tmp = $_FILES["foto"]["tmp_name"];
-                    $dest = dirname(APP_PATH) . "/public/storage/reportes/{$this->reporte->id}.jpg";
+            // Manejar la foto ANTES de actualizar
+            if (!empty($_FILES["foto"]["name"])) {
+                $tmp = $_FILES["foto"]["tmp_name"];
+                $dest = dirname(APP_PATH) . "/public/storage/reportes/{$this->reporte->id}.jpg";
 
-                    $dir = dirname($dest);
-                    if (!is_dir($dir)) {
-                        mkdir($dir, 0777, true);
-                    }
-
-                    move_uploaded_file($tmp, $dest);
+                $dir = dirname($dest);
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0777, true);
                 }
 
+                // Eliminar foto anterior si existe
+                if (file_exists($dest)) {
+                    unlink($dest);
+                }
+
+                move_uploaded_file($tmp, $dest);
+            }
+
+            if ($this->reporte->update($params)) {
                 Flash::valid('El reporte se actualizó correctamente');
                 return Redirect::to("reportes/index");
             } else {
@@ -128,5 +133,67 @@ class ReportesController extends AppController
         }
 
         return Redirect::to("reportes/mis_reportes");
+    }
+
+    /**
+     * Vista de administración de reportes
+     */
+    public function admin()
+    {
+        $this->reportes = (new Reportes())->find("order: created_at DESC");
+        $this->estados = (new Estados())->find();
+        $this->prioridades = (new Prioridades())->find();
+        $this->title = 'Gestión de Reportes';
+        $this->subtitle = 'Panel de Administración';
+    }
+
+    /**
+     * Cambiar estado de un reporte
+     */
+    public function cambiar_estado($id)
+    {
+        $reporte = (new Reportes())->find_first((int) $id);
+
+        if (!$reporte) {
+            Flash::error('No se encontró el reporte');
+            return Redirect::to("reportes/admin");
+        }
+
+        if (Input::hasPost('estado_id')) {
+            $reporte->estado_id = Input::post('estado_id');
+
+            if ($reporte->update()) {
+                Flash::valid('Estado actualizado correctamente');
+            } else {
+                Flash::error('No se pudo actualizar el estado');
+            }
+        }
+
+        return Redirect::to("reportes/admin");
+    }
+
+    /**
+     * Cambiar prioridad de un reporte
+     */
+    public function cambiar_prioridad($id)
+    {
+        $reporte = (new Reportes())->find_first((int) $id);
+
+        if (!$reporte) {
+            Flash::error('No se encontró el reporte');
+            return Redirect::to("reportes/admin");
+        }
+
+        if (Input::hasPost('prioridad_id')) {
+            $reporte->prioridad_id = Input::post('prioridad_id');
+
+            if ($reporte->update()) {
+                Flash::valid('Prioridad actualizada correctamente');
+            } else {
+                Flash::error('No se pudo actualizar la prioridad');
+            }
+        }
+
+        return Redirect::to("reportes/admin");
     }
 }

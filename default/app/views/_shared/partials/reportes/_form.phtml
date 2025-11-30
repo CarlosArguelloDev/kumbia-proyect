@@ -17,7 +17,7 @@
                 <br>
 
                 <label class="form-label">Diámetro (cm)</label>
-                <?= Form::number("reporte.diametro", ["class" => "form-control", "min" => 1, "placeholder" => "ej: 55.33", "required" => "required"]) ?>
+                <?= Form::number("reporte.diametro", ["class" => "form-control", "min" => 1, "step" => "0.01", "placeholder" => "ej: 55.33", "required" => "required"]) ?>
                 <br>
                 <?= Bform::text_label("Dirección", "reporte.direccion", ["id" => "direccion", "placeholder" => "Agrega una dirección", "required" => "required"]) ?>
                 <br>
