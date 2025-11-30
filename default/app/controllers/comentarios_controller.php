@@ -4,6 +4,15 @@
  */
 class ComentariosController extends AppController
 {
+    public function initialize()
+    {
+        // Llamar al initialize del padre
+        parent::initialize();
+
+        // Solo admins pueden gestionar comentarios
+        Auth::requireAdmin();
+    }
+
     public function index()
     {
         // Obtener comentarios con orden descendente
@@ -21,13 +30,16 @@ class ComentariosController extends AppController
 
     public function crear($reporte_id = null)
     {
+        // Requiere autenticación para crear comentarios
+        Auth::require();
+
         View::select(null, null);
 
         if (Input::hasPost('comentario')) {
 
             $data = Input::post('comentario');
             $data['reporte_id'] = (int) ($reporte_id ?: ($data['reporte_id'] ?? 0));
-            $data['usuario_id'] = 1;
+            $data['usuario_id'] = Auth::id(); // Usuario autenticado
             $data['publico'] = 1;
             $comentario = new Comentarios($data);
             if ($comentario->create()) {

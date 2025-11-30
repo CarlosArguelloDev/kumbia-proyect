@@ -4,6 +4,9 @@
  */
 require_once CORE_PATH . 'kumbia/controller.php';
 
+// Cargar clase Auth
+require_once APP_PATH . 'libs/Auth.php';
+
 /**
  * Controlador principal que heredan los controladores
  *
@@ -17,7 +20,7 @@ require_once CORE_PATH . 'kumbia/controller.php';
 abstract class AppController extends Controller
 {
 
-    final protected function initialize()
+    protected function initialize()
     {
         $this->title = "Web2025";
         $this->subtitle = "Sección";
@@ -26,7 +29,7 @@ abstract class AppController extends Controller
 
     final protected function finalize()
     {
-        
+
     }
 
 }

@@ -4,6 +4,18 @@
  */
 class UsuariosController extends AppController
 {
+    public function initialize()
+    {
+        // Llamar al initialize del padre
+        parent::initialize();
+
+        // Solo admins pueden gestionar usuarios (excepto perfil)
+        $action = Router::get('action');
+        if ($action !== 'perfil') {
+            Auth::requireAdmin();
+        }
+    }
+
     public function index()
     {
         $this->usuarios = (new Usuarios())->find("order: id ASC");
@@ -87,8 +99,18 @@ class UsuariosController extends AppController
 
     public function perfil()
     {
-        // Usuario fijo ID=1
-        $this->usuario = (new Usuarios())->find_first(1);
+        // Requiere autenticación pero NO requiere admin
+        // Este método debe estar accesible para todos los usuarios autenticados
+        Auth::require();
+
+        // Obtener usuario autenticado
+        $this->usuario = (new Usuarios())->find_first(Auth::id());
+
+        if (!$this->usuario) {
+            Flash::error('Usuario no encontrado');
+            return Redirect::to('auth/logout');
+        }
+
         $this->title = 'Mi Perfil';
         $this->subtitle = 'Información personal';
 

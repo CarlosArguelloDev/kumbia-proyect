@@ -2,10 +2,25 @@
     <ul class="pc-navbar">
         <li class="pc-item">
             <a href="" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-braces"></i></span>
-                <span class="pc-mtext">21590276<br>Carlos Alberto Chávez Argüello</span>
+                <span class="pc-micon"><i class="ti ti-user-circle"></i></span>
+                <span class="pc-mtext">
+                    <?php if (Auth::check()): ?>
+                        Hola: <?= Auth::user()['nombre'] ?><br>
+
+                    <?php else: ?>
+                        Invitado
+                    <?php endif; ?>
+                </span>
             </a>
         </li>
+        <?php if (Auth::check()): ?>
+            <li class="pc-item">
+                <a href="/proyecto/default/public/auth/logout" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-logout"></i></span>
+                    <span class="pc-mtext">Cerrar Sesión</span>
+                </a>
+            </li>
+        <?php endif; ?>
 
         <!-- Sección Administración -->
         <li class="pc-item pc-caption">

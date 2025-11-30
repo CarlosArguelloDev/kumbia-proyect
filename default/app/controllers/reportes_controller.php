@@ -18,6 +18,9 @@ class ReportesController extends AppController
 
     public function registrar()
     {
+        // Requiere estar autenticado
+        Auth::require();
+
         $this->reporte = new Reportes();
         $this->title = 'Reportes';
         $this->subtitle = 'Registrar Reporte';
@@ -26,7 +29,7 @@ class ReportesController extends AppController
             $params = Input::post("reporte");
             $reporte = new Reportes($params);
 
-            $reporte->usuario_id = 1; // Usuario por defecto
+            $reporte->usuario_id = Auth::id(); // Usuario autenticado
             $reporte->estado_id = 1;
             $reporte->prioridad_id = 1;
 
@@ -61,10 +64,19 @@ class ReportesController extends AppController
 
     public function editar($id)
     {
+        // Requiere autenticación
+        Auth::require();
+
         $this->reporte = (new Reportes())->find_first((int) $id);
 
         if (!$this->reporte) {
             Flash::error('No se encontró el reporte');
+            return Redirect::to("reportes/index");
+        }
+
+        // Solo el dueño o un admin pueden editar
+        if ($this->reporte->usuario_id != Auth::id() && !Auth::isAdmin()) {
+            Flash::error('No tienes permisos para editar este reporte');
             return Redirect::to("reportes/index");
         }
 
@@ -103,8 +115,11 @@ class ReportesController extends AppController
 
     public function mis_reportes()
     {
-        // Usuario fijo
-        $usuario_id = 1;
+        // Requiere autenticación
+        Auth::require();
+
+        // Obtener reportes del usuario autenticado
+        $usuario_id = Auth::id();
 
         $this->reportes = (new Reportes())->find("conditions: usuario_id = $usuario_id", "order: created_at DESC");
         $this->title = 'Mis Reportes';
@@ -140,6 +155,9 @@ class ReportesController extends AppController
      */
     public function admin()
     {
+        // Solo administradores pueden gestionar reportes
+        Auth::requireAdmin();
+
         $this->reportes = (new Reportes())->find("order: created_at DESC");
         $this->estados = (new Estados())->find();
         $this->prioridades = (new Prioridades())->find();

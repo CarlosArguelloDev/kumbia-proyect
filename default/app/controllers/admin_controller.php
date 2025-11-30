@@ -4,6 +4,15 @@
  */
 class AdminController extends AppController
 {
+    public function initialize()
+    {
+        // Llamar al initialize del padre
+        parent::initialize();
+
+        // Requiere que el usuario sea administrador
+        Auth::requireAdmin();
+    }
+
     /**
      * Dashboard principal del administrador
      */

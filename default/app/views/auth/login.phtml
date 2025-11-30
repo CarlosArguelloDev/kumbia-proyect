@@ -1,0 +1,59 @@
+<div class="card">
+    <div class="card-body">
+        <div class="text-center mb-4">
+            <i class="ti ti-lock display-4 text-primary"></i>
+            <h3 class="mt-3 mb-2"><?= $title ?></h3>
+            <p class="text-muted">Ingresa tus credenciales para acceder</p>
+        </div>
+
+        <?= Form::open() ?>
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" placeholder="correo@ejemplo.com" required autofocus>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn btn-primary">
+                <i class="ti ti-login"></i> Iniciar Sesión
+            </button>
+        </div>
+        <?= Form::close() ?>
+
+        <div class="text-center">
+            <p class="text-muted">
+                ¿No tienes cuenta?
+                <a href="<?= PUBLIC_PATH ?>auth/registro" class="link-primary">
+                    Regístrate aquí
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-main {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .auth-wrapper {
+        width: 100%;
+        max-width: 450px;
+        padding: 20px;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+    }
+</style>
