@@ -1,9 +1,7 @@
 <h1><?= $title ?></h1>
 
 <div class="mb-3">
-    <a href="<?= PUBLIC_PATH ?>admin/dashboard" class="btn btn-light">
-        <i class="ti ti-arrow-left me-1"></i> Volver al Dashboard
-    </a>
+    <?= Bform::btn_volver('admin/dashboard', 'Volver') ?>
 </div>
 
 <div class="card">
@@ -35,15 +33,8 @@
                                 <small><?= date('d/m/Y H:i', strtotime($c->created_at)) ?></small>
                             </td>
                             <td>
-                                <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $c->reporte_id ?>"
-                                    class="btn btn-sm btn-light-info" title="Ver Reporte">
-                                    <i class="ti ti-eye"></i>
-                                </a>
-                                <a href="<?= PUBLIC_PATH ?>comentarios/eliminar/<?= $c->id ?>"
-                                    class="btn btn-sm btn-light-danger" title="Eliminar"
-                                    onclick="return confirm('¿Estás seguro de eliminar este comentario?')">
-                                    <i class="ti ti-trash"></i>
-                                </a>
+                                <?= Bform::btn_ver("reportes/ver/{$c->reporte_id}", ['title' => 'Ver Reporte']) ?>
+                                <?= Bform::btn_eliminar_link("comentarios/eliminar/{$c->id}", '¿Estás seguro de eliminar este comentario?') ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -2,9 +2,7 @@
 
 <div class="d-flex justify-content-between mb-3">
     <div>
-        <a href="<?= PUBLIC_PATH ?>admin/dashboard" class="btn btn-light">
-            <i class="ti ti-arrow-left me-1"></i> Volver al Dashboard
-        </a>
+        <?= Bform::btn_volver('admin/dashboard', 'Volver') ?>
     </div>
     <div>
         <span class="badge bg-primary">Total: <?= count($reportes) ?> reportes</span>
@@ -64,19 +62,9 @@
                                 <small><?= date('d/m/Y', strtotime($r->created_at)) ?></small>
                             </td>
                             <td>
-                                <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>" 
-                                   class="btn btn-sm btn-light-info" title="Ver">
-                                    <i class="ti ti-eye"></i>
-                                </a>
-                                <a href="<?= PUBLIC_PATH ?>reportes/editar/<?= $r->id ?>" 
-                                   class="btn btn-sm btn-light-warning" title="Editar">
-                                    <i class="ti ti-edit"></i>
-                                </a>
-                                <a href="<?= PUBLIC_PATH ?>reportes/eliminar/<?= $r->id ?>" 
-                                   class="btn btn-sm btn-light-danger" title="Eliminar"
-                                   onclick="return confirm('¿Estás seguro de eliminar este reporte?')">
-                                    <i class="ti ti-trash"></i>
-                                </a>
+                                <?= Bform::grupo_acciones($r->id, 'reportes', [
+                                    'mensaje_eliminar' => '¿Estás seguro de eliminar este reporte?'
+                                ]) ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>

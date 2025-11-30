@@ -9,7 +9,7 @@ class UsuariosController extends AppController
         // Llamar al initialize del padre
         parent::initialize();
 
-        // Solo admins pueden gestionar usuarios (excepto perfil)
+        // Solo admins pueden gestionar usuarios
         $action = Router::get('action');
         if ($action !== 'perfil') {
             Auth::requireAdmin();
@@ -99,8 +99,6 @@ class UsuariosController extends AppController
 
     public function perfil()
     {
-        // Requiere autenticación pero NO requiere admin
-        // Este método debe estar accesible para todos los usuarios autenticados
         Auth::require();
 
         // Obtener usuario autenticado

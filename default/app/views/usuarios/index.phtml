@@ -2,14 +2,10 @@
 
 <div class="d-flex justify-content-between mb-3">
     <div>
-        <a href="<?= PUBLIC_PATH ?>admin/dashboard" class="btn btn-light">
-            <i class="ti ti-arrow-left me-1"></i> Volver al Dashboard
-        </a>
+        <?= Bform::btn_volver('admin/dashboard', 'Volver') ?>
     </div>
     <div>
-        <a href="<?= PUBLIC_PATH ?>usuarios/crear" class="btn btn-primary">
-            <i class="ti ti-plus me-1"></i> Nuevo Usuario
-        </a>
+        <?= Bform::btn_agregar("usuarios/crear", "Agregar Usuario") ?>
     </div>
 </div>
 
@@ -46,15 +42,10 @@
                                 <small><?= date('d/m/Y', strtotime($u->created_at)) ?></small>
                             </td>
                             <td>
-                                <a href="<?= PUBLIC_PATH ?>usuarios/editar/<?= $u->id ?>"
-                                    class="btn btn-sm btn-light-warning" title="Editar">
-                                    <i class="ti ti-edit"></i>
-                                </a>
-                                <a href="<?= PUBLIC_PATH ?>usuarios/eliminar/<?= $u->id ?>"
-                                    class="btn btn-sm btn-light-danger" title="Eliminar"
-                                    onclick="return confirm('¿Estás seguro de eliminar este usuario?')">
-                                    <i class="ti ti-trash"></i>
-                                </a>
+                                <?= Bform::grupo_acciones($u->id, 'usuarios', [
+                                    'ver' => false,
+                                    'mensaje_eliminar' => '¿Estás seguro de eliminar este usuario?'
+                                ]) ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
