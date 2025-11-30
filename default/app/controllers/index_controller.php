@@ -9,6 +9,7 @@ class IndexController extends AppController
 
     public function index()
     {
+
         $this->title = 'Inicio';
         $this->subtitle = 'Sección';
 

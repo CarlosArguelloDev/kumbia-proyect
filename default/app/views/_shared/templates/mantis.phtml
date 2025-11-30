@@ -11,6 +11,7 @@
     <meta name="description" content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
     <meta name="keywords" content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
     <meta name="author" content="CodedThemes">
+    <?= Html::includeCss() ?>
     <!-- datatable -->
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.css" />
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
@@ -29,6 +30,22 @@
     <link rel="stylesheet" href="/proyecto/libs/mantis/dist/assets/css/style.css" id="main-style-link" >
     <link rel="stylesheet" href="/proyecto/libs/mantis/dist/assets/css/style-preset.css" >
 
+
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""
+    />
+
+    <style>
+        /* El contenedor del mapa debe tener altura definida */
+        #map {
+            height: 500px;
+            width: 100%;
+            border: 1px solid #ccc;
+        }
+    </style>
 </head>
 <!-- [Head] end -->
 <!-- [Body] Start -->
@@ -54,21 +71,12 @@
 
         <!-- [ breadcrumb ] end -->
         <!-- [ Main Content ] start -->
-        <h1><?=  $title ?></h1>
-        <div class="row">
-            <!-- [ sample-page ] start -->
-            <div class="col-sm-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5><?=  $subtitle ?></h5>
-                    </div>
-                    <div class="card-body">
-                        <?php View::content() ?>
-                    </div>
-                </div>
-            </div>
-            <!-- [ sample-page ] end -->
-        </div>
+
+
+        <?php View::content() ?>
+
+
+
 
 
         <!-- [ Main Content ] end -->

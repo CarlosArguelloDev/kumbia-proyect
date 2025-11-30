@@ -1,5 +1,5 @@
 <?php
-class Usuarios extends ActiveRecord
+Class Estados extends ActiveRecord
 {
     public function initialize()
     {

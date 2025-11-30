@@ -1,67 +1,113 @@
-<?php
-// (Opcional) catálogos rápidos para mostrar texto en vez de IDs
-$prioridades = [1 => 'Baja', 2 => 'Media', 3 => 'Alta'];
-$estados     = [1 => 'Pendiente', 2 => 'En Proceso', 3 => 'Cerrado'];
-?>
-
-<button type="button" class="btn btn-primary d-inline-flex"><i class="ti ti-plus"></i>Realizar reporte</button>
-<br><br>
-
-<?php foreach ($reportes as $r): ?>
-    <div class="card overflow-hidden mb-3">
-        <div class="row g-0">
-            <div class="col-md-4">
-                <!-- Imagen: asumiendo /public/img/reportes/{id}.jpg -->
-                <img
-                    src="<?= PUBLIC_PATH ?>storage/reportes/<?= $r->id ?>.jpg"
-                    alt="Imagen Reporte <?= $r->id ?>"
-                    width="256"
-                    class="img-fluid"
-                >
+<h1><?= $title ?></h1>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><?= $subtitle ?></h5>
             </div>
-            <div class="col-md-8">
-                <div class="card-body">
-                    <!-- Titulo del reporte + badges -->
-                    <h5 class="card-title">
-                        <?= $r->titulo ?>
-                        <?php if (!empty($r->diametro)): ?>
-                            <span class="badge bg-light-warning">
-                            <i class="ti ti-ruler-2"></i>
-                            Diámetro: <?= $r->diametro ?>cm
-                        </span>
-                        <?php endif; ?>
-                        <span class="badge bg-info">
-                        <i class="ti ti-clock"></i>
-                        Estado: <?= $estados[$r->estado_id] ?? $r->estado_id ?>
-                    </span>
-                        <span class="badge bg-danger">
-                        <i class="ti ti-arrow-up-right"></i>
-                        Prioridad: <?= $prioridades[$r->prioridad_id] ?? $r->prioridad_id ?>
-                    </span>
-                    </h5>
+            <div class="card-body">
+                <!-- Contenidoend -->
+                <?= Bform::btn_agregar("reportes/registrar", "Realizar reporte") ?>
+                <br><br>
 
-                    <?php if (!empty($r->descripcion)): ?>
-                        <p class="card-text"><?= $r->descripcion ?></p>
-                    <?php endif; ?>
+                <?php foreach ($reportes as $r): ?>
+                    <div class="card overflow-hidden mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="<?= PUBLIC_PATH ?>storage/reportes/<?= $r->id ?>.jpg"
+                                    alt="Imagen Reporte <?= $r->id ?>" width="256" class="img-fluid">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <!-- Titulo del reporte-->
+                                    <h5 class="card-title">
+                                        <?= $r->titulo ?>
+                                    </h5>
+                                    <!-- Badges -->
+                                    <span class="badge bg-light-warning">
+                                        <i class="ti ti-ruler-2"></i>
+                                        Diámetro: <?= $r->diametro ?>cm
+                                    </span>
+                                    <?= Bform::badge_estado($r->getEstados()) ?>
+                                    <?= Bform::badge_prioridad($r->getPrioridades()) ?>
+                                    <!-- Atributos -->
+                                    <p class="card-text"><?= $r->descripcion ?></p>
+                                    <p class="card-text">
+                                        <i class="ti ti-calendar-event"></i>
+                                        <small class="text-muted">
+                                            <?= date('m/d/Y', strtotime($r->created_at)) ?>
+                                        </small>
+                                        <i class="ti ti-map-pin ms-2"></i>
+                                        <small class="text-muted">
+                                            <?= $r->direccion ?>
+                                        </small>
+                                        <i class="ti ti-user"></i>
+                                        <small class="text-muted">
+                                            <?= $r->getUsuarios()->nombre ?>
+                                        </small>
+                                        <br><br>
+                                        <!-- Links  -->
+                                        <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>" class="card-link">Ver Más</a>
+                                        <a href="#!" class="card-link"
+                                            onclick="toggleComentarios(<?= $r->id ?>)">Comentarios</a>
 
-                    <p class="card-text">
-                        <i class="ti ti-calendar-event"></i>
-                        <small class="text-muted">
-                            <?= date('m/d/Y', strtotime($r->created_at)) ?>
-                        </small>
+                                    </p>
+                                </div>
+                            </div>
+                            <div id="comentarios-<?= $r->id ?>" class="mt-2" style="display:none;">
+                                <h6><i class="ti ti-message-2"></i> Comentarios</h6>
 
-                        <?php if (!empty($r->direccion)): ?>
-                            <i class="ti ti-map-pin ms-2"></i>
-                            <small class="text-muted"><?= $r->direccion ?></small>
-                        <?php endif; ?>
+                                <?php $comments = (new Comentarios)->find("reporte_id = {$r->id}", "order: created_at DESC"); ?>
 
-                        <br><br>
-                        <!-- Links de ejemplo (como en tu snippet) -->
-                        <a href="#!" class="card-link">Ver Más</a>
-                        <a href="#!" class="card-link">Comentarios</a>
-                    </p>
-                </div>
+                                <?php if (count($comments) > 0): ?>
+                                    <?php foreach ($comments as $c): ?>
+                                        <div class="border rounded p-3 mb-3">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <strong><i class="ti ti-user"></i> <?= $c->getUsuarios()->nombre ?></strong>
+                                                <small class="text-muted">
+                                                    <i class="ti ti-clock"></i> <?= date('d/m/Y H:i', strtotime($c->created_at)) ?>
+                                                </small>
+                                            </div>
+                                            <p class="mb-0"><?= $c->texto ?></p>
+                                            <?php if ($c->publico): ?>
+                                                <span class="badge bg-light-info mt-2"><i class="ti ti-eye"></i> Público</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <p class="text-muted">No hay comentarios aún</p>
+                                <?php endif; ?>
+
+                                <hr>
+
+                                <!-- Form -->
+                                <h6 class="mb-2">Agregar Comentario</h6>
+                                <form action="<?= PUBLIC_PATH ?>comentarios/crear/<?= $r->id ?>" method="post">
+
+                                    <input type="hidden" name="comentario[reporte_id]" value="<?= $r->id ?>">
+
+                                    <textarea name="comentario[texto]" class="form-control mb-2" rows="3"
+                                        placeholder="Escribe un comentario..." required></textarea>
+
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="ti ti-send"></i> Enviar
+                                    </button>
+                                </form>
+                            </div>
+
+
+                        </div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
     </div>
-<?php endforeach; ?>
+</div>
+
+
+<script>
+    function toggleComentarios(id) {
+        let div = document.getElementById("comentarios-" + id);
+        div.style.display = (div.style.display === "none") ? "block" : "none";
+    }
+</script>

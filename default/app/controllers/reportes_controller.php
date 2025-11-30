@@ -1,7 +1,8 @@
 <?php
-class ReportesController extends AppController{
-
-    public function index(){
+class ReportesController extends AppController
+{
+    public function index()
+    {
         $this->reportes = (new Reportes())->find();
         $this->title = 'Reportes';
         $this->subtitle = 'Listado de baches';
@@ -17,20 +18,115 @@ class ReportesController extends AppController{
 
     public function registrar()
     {
-        $this->reporte  = new Reportes();
-        $this->title    = 'Reportes';
+        $this->reporte = new Reportes();
+        $this->title = 'Reportes';
         $this->subtitle = 'Registrar Reporte';
 
         if (Input::hasPost("reporte")) {
-
-            $params  = Input::post("reporte");
+            $params = Input::post("reporte");
             $reporte = new Reportes($params);
 
+            $reporte->usuario_id = 1; // Usuario por defecto
+            $reporte->estado_id = 1;
+            $reporte->prioridad_id = 1;
+
             if ($reporte->create()) {
+                if (!empty($_FILES["foto"]["name"])) {
+                    $tmp = $_FILES["foto"]["tmp_name"];
+                    $dest = dirname(APP_PATH) . "/public/storage/reportes/{$reporte->id}.jpg";
+
+                    $dir = dirname($dest);
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0777, true);
+                    }
+
+                    move_uploaded_file($tmp, $dest);
+                }
+
                 Flash::valid('El reporte se registró correctamente');
+                return Redirect::to("reportes/index");
             } else {
                 Flash::error('No se pudo registrar el reporte');
             }
         }
+    }
+
+    public function ver($id)
+    {
+        $this->reporte = (new Reportes())->find_first((int) $id);
+        $this->comentarios = (new Comentarios())->find("conditions: reporte_id = $id", "order: created_at DESC");
+        $this->title = 'Ver Reporte';
+        $this->subtitle = $this->reporte ? $this->reporte->titulo : 'Detalle del reporte';
+    }
+
+    public function editar($id)
+    {
+        $this->reporte = (new Reportes())->find_first((int) $id);
+
+        if (!$this->reporte) {
+            Flash::error('No se encontró el reporte');
+            return Redirect::to("reportes/index");
+        }
+
+        $this->title = 'Reportes';
+        $this->subtitle = 'Editar Reporte';
+
+        if (Input::hasPost("reporte")) {
+            $params = Input::post("reporte");
+
+            if ($this->reporte->update($params)) {
+                // Si se subió una nueva foto
+                if (!empty($_FILES["foto"]["name"])) {
+                    $tmp = $_FILES["foto"]["tmp_name"];
+                    $dest = dirname(APP_PATH) . "/public/storage/reportes/{$this->reporte->id}.jpg";
+
+                    $dir = dirname($dest);
+                    if (!is_dir($dir)) {
+                        mkdir($dir, 0777, true);
+                    }
+
+                    move_uploaded_file($tmp, $dest);
+                }
+
+                Flash::valid('El reporte se actualizó correctamente');
+                return Redirect::to("reportes/index");
+            } else {
+                Flash::error('No se pudo actualizar el reporte');
+            }
+        }
+    }
+
+    public function mis_reportes()
+    {
+        // Usuario fijo
+        $usuario_id = 1;
+
+        $this->reportes = (new Reportes())->find("conditions: usuario_id = $usuario_id", "order: created_at DESC");
+        $this->title = 'Mis Reportes';
+        $this->subtitle = 'Gestiona tus reportes';
+    }
+
+    public function eliminar($id)
+    {
+        $reporte = (new Reportes())->find_first((int) $id);
+
+        if (!$reporte) {
+            Flash::error('No se encontró el reporte');
+            return Redirect::to("reportes/mis_reportes");
+        }
+
+        if ($reporte->delete()) {
+            // Eliminar foto asociada si existe
+            $foto_path = dirname(APP_PATH) . "/public/storage/reportes/{$reporte->id}.jpg";
+            if (file_exists($foto_path)) {
+                unlink($foto_path);
+            }
+
+            Flash::valid('El reporte se eliminó correctamente');
+        } else {
+            Flash::error('No se pudo eliminar el reporte');
+        }
+
+        return Redirect::to("reportes/mis_reportes");
     }
 }

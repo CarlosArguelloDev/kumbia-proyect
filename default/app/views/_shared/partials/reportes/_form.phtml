@@ -1,0 +1,122 @@
+<?= Form::openMultipart() ?>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h6>Datos del reporte</h6>
+            </div>
+            <div class="card-body">
+
+                <?= Bform::text_label("Título", "reporte.titulo", ["placeholder" => "Agrega un titulo", "required" => "required"]) ?>
+                <br>
+
+                <label class="form-label">Descripción</label>
+                <?= Form::textarea("reporte.descripcion", ["class" => "form-control", "rows" => 3, "placeholder" => "Agrega una descripción", "required" => "required"]) ?>
+                <br>
+
+                <label class="form-label">Diámetro (cm)</label>
+                <?= Form::number("reporte.diametro", ["class" => "form-control", "min" => 1, "placeholder" => "ej: 55.33", "required" => "required"]) ?>
+                <br>
+                <?= Bform::text_label("Dirección", "reporte.direccion", ["id" => "direccion", "placeholder" => "Agrega una dirección", "required" => "required"]) ?>
+                <br>
+                <input type="hidden" name="reporte[latitud]" id="latitud">
+                <input type="hidden" name="reporte[longitud]" id="longitud">
+                <label>Fotografía</label>
+                <?php
+                // En modo edición, la foto es opcional
+                $fotoRequired = (isset($reporte) && $reporte->id) ? [] : ["required" => "required"];
+                ?>
+                <?= Form::file("foto", array_merge(["class" => "form-control"], $fotoRequired)) ?>
+                <small class="text-muted">Formatos recomendados:
+                    JPG.<?= (isset($reporte) && $reporte->id) ? ' Dejar vacío para mantener la foto actual.' : '' ?></small>
+
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <h6>Ubicación en el mapa</h6>
+            </div>
+            <div class="card-body">
+
+                <label>Selecciona ubicación en el mapa</label>
+                <div id="map" style="height: 420px; border-radius:12px;"></div>
+                <small class="text-muted">
+                    Da click para poner marcador o arrástralo para ajustar.
+                </small>
+
+            </div>
+            <div class="card-footer text-end">
+                <?php
+                $btnText = (isset($reporte) && $reporte->id) ? "Actualizar reporte" : "Realizar reporte";
+                ?>
+                <?= Bform::btn_aceptar($btnText) ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= Form::close() ?>
+
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="">
+    </script>
+
+<script>
+    // Centro inicial (Querétaro / SJR)
+    <?php if (isset($reporte) && $reporte->id && $reporte->latitud && $reporte->longitud): ?>
+        // Si hay un reporte existente, usar sus coordenadas
+        const centro = [<?= $reporte->latitud ?>, <?= $reporte->longitud ?>];
+    <?php else: ?>
+        // Centro por defecto
+        const centro = [20.3712465, -99.9830166];
+    <?php endif; ?>
+
+    const map = L.map('map').setView(centro, 14);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker = L.marker(centro, { draggable: true }).addTo(map);
+
+    function setLocation(lat, lng) {
+        document.getElementById("latitud").value = lat;
+        document.getElementById("longitud").value = lng;
+
+        // Reverse geocoding (Nominatim) -> autollenar dirección
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data && data.display_name) {
+                    const dirInput = document.getElementById("direccion");
+                    if (dirInput && !dirInput.value) {
+                        dirInput.value = data.display_name;
+                    }
+                }
+            })
+            .catch(() => { });
+    }
+
+    setLocation(centro[0], centro[1]);
+
+    map.on('click', function (e) {
+        marker.setLatLng(e.latlng);
+        setLocation(e.latlng.lat, e.latlng.lng);
+    });
+
+    marker.on('dragend', function (e) {
+        const p = e.target.getLatLng();
+        setLocation(p.lat, p.lng);
+    });
+</script>

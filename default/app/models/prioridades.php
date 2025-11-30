@@ -1,5 +1,5 @@
 <?php
-class Usuarios extends ActiveRecord
+Class Prioridades extends ActiveRecord
 {
     public function initialize()
     {
