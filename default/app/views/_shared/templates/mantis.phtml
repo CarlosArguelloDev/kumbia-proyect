@@ -3,13 +3,15 @@
 <!-- [Head] start -->
 
 <head>
-    <title><?=  $title ?> | <?=  $subtitle ?></title>
+    <title><?= $title ?> | <?= $subtitle ?></title>
     <!-- [Meta] -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
-    <meta name="keywords" content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
+    <meta name="description"
+        content="Mantis is made using Bootstrap 5 design framework. Download the free admin template & use it for your project.">
+    <meta name="keywords"
+        content="Mantis, Dashboard UI Kit, Bootstrap 5, Admin Template, Admin Dashboard, CRM, CMS, Bootstrap Admin Template">
     <meta name="author" content="CodedThemes">
     <?= Html::includeCss() ?>
     <!-- datatable -->
@@ -17,26 +19,24 @@
     <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
     <!-- [Favicon] icon -->
     <link rel="icon" href="/proyecto/default/public/storage/icon.png" type="image/x-icon"> <!-- [Google Font] Family -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap"
+        id="main-font-link">
     <!-- [Tabler Icons] https://tablericons.com -->
-    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/tabler-icons.min.css" >
+    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/tabler-icons.min.css">
     <!-- [Feather Icons] https://feathericons.com -->
-    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/feather.css" >
+    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/feather.css">
     <!-- [Font Awesome Icons] https://fontawesome.com/icons -->
-    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/fontawesome.css" >
+    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/fontawesome.css">
     <!-- [Material Icons] https://fonts.google.com/icons -->
-    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/material.css" >
+    <link rel="stylesheet" href="/proyecto/libs/mantis/src/assets/fonts/material.css">
     <!-- [Template CSS Files] -->
-    <link rel="stylesheet" href="/proyecto/libs/mantis/dist/assets/css/style.css" id="main-style-link" >
-    <link rel="stylesheet" href="/proyecto/libs/mantis/dist/assets/css/style-preset.css" >
+    <link rel="stylesheet" href="/proyecto/libs/mantis/dist/assets/css/style.css" id="main-style-link">
+    <link rel="stylesheet" href="/proyecto/libs/mantis/dist/assets/css/style-preset.css">
 
 
-    <link
-        rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin=""
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <style>
         /* El contenedor del mapa debe tener altura definida */
@@ -51,69 +51,69 @@
 <!-- [Body] Start -->
 
 <body data-pc-preset="preset-1" data-pc-direction="ltr" data-pc-theme="light">
-<!-- [ Pre-loader ] start -->
-<div class="loader-bg">
-    <div class="loader-track">
-        <div class="loader-fill"></div>
+    <!-- [ Pre-loader ] start -->
+    <div class="loader-bg">
+        <div class="loader-track">
+            <div class="loader-fill"></div>
+        </div>
     </div>
-</div>
-<!-- [ Pre-loader ] End -->
-<!-- [ Sidebar Menu ] start -->
-<?php View::partial("mantis/sidebar"); ?>
-<!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
-<?php View::partial("mantis/header"); ?>
-<!-- [ Header ] end -->
+    <!-- [ Pre-loader ] End -->
+    <!-- [ Sidebar Menu ] start -->
+    <?php View::partial("mantis/sidebar"); ?>
+    <!-- [ Sidebar Menu ] end --> <!-- [ Header Topbar ] start -->
+    <?php View::partial("mantis/header"); ?>
+    <!-- [ Header ] end -->
 
-<!-- [ Main Content ] start -->
-<div class="pc-container">
-    <div class="pc-content">
-        <!-- [ breadcrumb ] start -->
+    <!-- [ Main Content ] start -->
+    <div class="pc-container">
+        <div class="pc-content">
+            <!-- [ breadcrumb ] start -->
 
-        <!-- [ breadcrumb ] end -->
-        <!-- [ Main Content ] start -->
-
-
-        <?php View::content() ?>
+            <!-- [ breadcrumb ] end -->
+            <!-- [ Main Content ] start -->
 
 
-
-
-
-        <!-- [ Main Content ] end -->
-        <?php View::partial("mantis/footer") ?>
-
-        <!-- [Page Specific JS] start -->
-        <script src="/proyecto/libs/mantis/src/assets/js/plugins/apexcharts.min.js"></script>
-        <script src="/proyecto/libs/mantis/src/assets/js/pages/dashboard-default.js"></script>
-        <!-- [Page Specific JS] end -->
-        <!-- Required Js -->
-        <script src="/proyecto/libs/mantis/src/assets/js/plugins/popper.min.js"></script>
-        <script src="/proyecto/libs/mantis/src/assets/js/plugins/simplebar.min.js"></script>
-        <script src="/proyecto/libs/mantis/src/assets/js/plugins/bootstrap.min.js"></script>
-        <script src="/proyecto/libs/mantis/src/assets/js/fonts/custom-font.js"></script>
-        <script src="/proyecto/libs/mantis/src/assets/js/pcoded.js"></script>
-        <script src="/proyecto/libs/mantis/src/assets/js/plugins/feather.min.js"></script>
+            <?php View::content() ?>
 
 
 
 
 
-        <script>layout_change('light');</script>
+            <!-- [ Main Content ] end -->
+            <?php View::partial("mantis/footer") ?>
+
+            <!-- [Page Specific JS] start -->
+            <script src="/proyecto/libs/mantis/dist/assets/js/plugins/apexcharts.min.js"></script>
+            <script src="/proyecto/libs/mantis/dist/assets/js/pages/dashboard-default.js"></script>
+            <!-- [Page Specific JS] end -->
+            <!-- Required Js -->
+            <script src="/proyecto/libs/mantis/dist/assets/js/plugins/popper.min.js"></script>
+            <script src="/proyecto/libs/mantis/dist/assets/js/plugins/simplebar.min.js"></script>
+            <script src="/proyecto/libs/mantis/dist/assets/js/plugins/bootstrap.min.js"></script>
+            <script src="/proyecto/libs/mantis/dist/assets/js/fonts/custom-font.js"></script>
+            <script src="/proyecto/libs/mantis/dist/assets/js/pcoded.js"></script>
+            <script src="/proyecto/libs/mantis/dist/assets/js/plugins/feather.min.js"></script>
 
 
 
 
-        <script>change_box_container('false');</script>
+
+            <script>layout_change('light');</script>
 
 
 
-        <script>layout_rtl_change('false');</script>
+
+            <script>change_box_container('false');</script>
 
 
-        <script>preset_change("preset-1");</script>
+
+            <script>layout_rtl_change('false');</script>
 
 
-        <script>font_change("Public-Sans");</script>
+            <script>preset_change("preset-1");</script>
+
+
+            <script>font_change("Public-Sans");</script>
 
 
 

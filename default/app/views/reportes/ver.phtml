@@ -1,24 +1,22 @@
 <h1>Ver Reporte</h1>
 
-<?php 
-    $referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-    $backUrl = 'reportes/index'; 
-    $backText = 'Volver a Reportes';
-    
-    // Detectar si viene de mis_reportes
-    if (strpos($referer, 'mis_reportes') !== false) {
-        $backUrl = 'reportes/mis_reportes';
-        $backText = 'Volver a Mis Reportes';
-    }
-    // Detectar si viene de atendidos
-    elseif (strpos($referer, 'atendidos') !== false) {
-        $backUrl = 'reportes/atendidos';
-        $backText = 'Volver a Reportes Atendidos';
-    }
+<?php
+$referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+$backUrl = 'reportes/index';
+$backText = 'Volver a Reportes';
+
+// Detectar si viene de mis_reportes
+if (strpos($referer, 'mis_reportes') !== false) {
+    $backUrl = 'reportes/mis_reportes';
+    $backText = 'Volver a Mis Reportes';
+}
+// Detectar si viene de atendidos
+elseif (strpos($referer, 'atendidos') !== false) {
+    $backUrl = 'reportes/atendidos';
+    $backText = 'Volver a Reportes Atendidos';
+}
 ?>
-<a href="<?= PUBLIC_PATH ?><?= $backUrl ?>" class="btn btn-secondary mb-3">
-    <i class="ti ti-arrow-left"></i> <?= $backText ?>
-</a>
+<?= Bform::btn_volver('javascript:history.back()', 'Volver') ?>
 
 <div class="row">
     <div class="col-sm-12">
@@ -35,7 +33,7 @@
                 </div>
             </div>
             <div class="card-body">
-                
+
                 <!-- Fila de Foto y Mapa -->
                 <div class="row mb-3">
                     <!-- Card de Foto -->
@@ -45,16 +43,13 @@
                                 <h6><i class="ti ti-photo"></i> Fotografía</h6>
                             </div>
                             <div class="card-body text-center">
-                                <img 
-                                    src="<?= PUBLIC_PATH ?>storage/reportes/<?= $reporte->id ?>.jpg" 
-                                    alt="Foto del reporte" 
-                                    class="img-fluid rounded"
-                                    style="max-height: 400px; object-fit: cover;"
-                                >
+                                <img src="<?= PUBLIC_PATH ?>storage/reportes/<?= $reporte->id ?>.jpg"
+                                    alt="Foto del reporte" class="img-fluid rounded"
+                                    style="max-height: 400px; object-fit: cover;">
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Card de Ubicación -->
                     <div class="col-md-6">
                         <div class="card">
@@ -76,13 +71,19 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong><i class="ti ti-user"></i> Reportado por:</strong> <?= $reporte->getUsuarios()->nombre ?></p>
-                                <p><strong><i class="ti ti-calendar"></i> Fecha:</strong> <?= date('d/m/Y H:i', strtotime($reporte->created_at)) ?></p>
-                                <p><strong><i class="ti ti-map-pin"></i> Dirección:</strong> <?= $reporte->direccion ?></p>
+                                <p><strong><i class="ti ti-user"></i> Reportado por:</strong>
+                                    <?= $reporte->getUsuarios()->nombre ?></p>
+                                <p><strong><i class="ti ti-calendar"></i> Fecha:</strong>
+                                    <?= date('d/m/Y H:i', strtotime($reporte->created_at)) ?></p>
+                                <p><strong><i class="ti ti-map-pin"></i> Dirección:</strong> <?= $reporte->direccion ?>
+                                </p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong><i class="ti ti-ruler-2"></i> Diámetro:</strong> <?= $reporte->diametro ?> cm</p>
-                                <p><strong><i class="ti ti-map-2"></i> Coordenadas:</strong> <?= $reporte->latitud ?>, <?= $reporte->longitud ?></p>
+                                <p><strong><i class="ti ti-ruler-2"></i> Diámetro:</strong> <?= $reporte->diametro ?> cm
+                                </p>
+                                <p><strong><i class="ti ti-map-2"></i> Coordenadas:</strong> <?= $reporte->latitud ?>,
+                                    <?= $reporte->longitud ?>
+                                </p>
                             </div>
                         </div>
                         <hr>
@@ -117,22 +118,17 @@
                         <?php endif; ?>
 
                         <hr>
-                        
+
                         <!-- Formulario para nuevo comentario -->
                         <h6 class="mb-3">Agregar Comentario</h6>
                         <form action="<?= PUBLIC_PATH ?>comentarios/crear/<?= $reporte->id ?>" method="post">
                             <input type="hidden" name="comentario[reporte_id]" value="<?= $reporte->id ?>">
-                            
+
                             <div class="mb-3">
-                                <textarea 
-                                    name="comentario[texto]" 
-                                    class="form-control" 
-                                    rows="3" 
-                                    placeholder="Escribe tu comentario..."
-                                    required
-                                ></textarea>
+                                <textarea name="comentario[texto]" class="form-control" rows="3"
+                                    placeholder="Escribe tu comentario..." required></textarea>
                             </div>
-                            
+
                             <button type="submit" class="btn btn-primary">
                                 <i class="ti ti-send"></i> Enviar Comentario
                             </button>
@@ -146,33 +142,27 @@
 </div>
 
 <!-- Leaflet CSS -->
-<link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""
-/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
 <!-- Leaflet JS -->
-<script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin="">
-</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="">
+    </script>
 
 <script>
     // Coordenadas del reporte
     const lat = <?= $reporte->latitud ?>;
     const lng = <?= $reporte->longitud ?>;
-    
+
     // Crear mapa centrado en la ubicación del reporte
     const map = L.map('map').setView([lat, lng], 16);
-    
+
     // Añadir capa de mapa
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
-    
+
     // Añadir marcador en la ubicación
     const marker = L.marker([lat, lng]).addTo(map);
     marker.bindPopup("<b><?= $reporte->titulo ?></b><br><?= $reporte->direccion ?>").openPopup();

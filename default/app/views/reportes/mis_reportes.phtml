@@ -6,11 +6,10 @@
                 <h5><?= $subtitle ?></h5>
             </div>
             <div class="card-body">
-                <!-- Botón para crear nuevo reporte -->
                 <?= Bform::btn_agregar("reportes/registrar", "Realizar Reporte") ?>
                 <br><br>
 
-                <!-- Tabla de Mis Reportes -->
+                <!-- Tabla -->
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
@@ -44,7 +43,7 @@
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <!-- Botones de Acción -->
+                                            <!-- Botones -->
 
                                             <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>"
                                                 class="btn btn-sm btn-light-info" title="Ver">
@@ -78,7 +77,6 @@
     </div>
 </div>
 
-<!-- Script para confirmar eliminación -->
 <script>
     function confirmarEliminar(id, titulo) {
         if (confirm('¿Estás seguro de que deseas eliminar el reporte "' + titulo + '"?\n\nEsta acción no se puede deshacer.')) {

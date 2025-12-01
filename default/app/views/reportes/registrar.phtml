@@ -1,14 +1,15 @@
-<?php View::content()?>
-<h1><?=  $title ?></h1>
+<?php View::content() ?>
+<h1><?= $title ?></h1>
+<?= Bform::btn_volver('javascript:history.back()', 'Volver') ?>
 <div class="row">
     <div class="col-sm-12">
         <!-- Card principal -->
         <div class="card">
             <div class="card-header">
-                <h5><?=  $subtitle ?></h5>
+                <h5><?= $subtitle ?></h5>
             </div>
             <div class="card-body">
-                <?php View::partial('reportes/_form')?>
+                <?php View::partial('reportes/_form') ?>
             </div>
         </div>
     </div>

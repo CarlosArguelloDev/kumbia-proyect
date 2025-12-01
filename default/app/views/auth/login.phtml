@@ -1,5 +1,5 @@
-<div class="card">
-    <div class="card-body">
+<div class="card shadow-lg">
+    <div class="card-body p-5">
         <div class="text-center mb-4">
             <i class="ti ti-lock display-4 text-primary"></i>
             <h3 class="mt-3 mb-2"><?= $title ?></h3>
@@ -18,16 +18,16 @@
         </div>
 
         <div class="d-grid mb-3">
-            <button type="submit" class="btn btn-primary">
-                <i class="ti ti-login"></i> Iniciar Sesión
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="ti ti-login me-1"></i> Iniciar Sesión
             </button>
         </div>
         <?= Form::close() ?>
 
         <div class="text-center">
-            <p class="text-muted">
+            <p class="text-muted mb-0">
                 ¿No tienes cuenta?
-                <a href="<?= PUBLIC_PATH ?>auth/registro" class="link-primary">
+                <a href="<?= PUBLIC_PATH ?>auth/registro" class="link-primary fw-bold">
                     Regístrate aquí
                 </a>
             </p>
@@ -42,18 +42,41 @@
         align-items: center;
         justify-content: center;
         min-height: 100vh;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background-image: url('<?= PUBLIC_PATH ?>storage/banner.png');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .auth-main::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        z-index: 1;
     }
 
     .auth-wrapper {
+        position: relative;
         width: 100%;
-        max-width: 450px;
+        max-width: 480px;
         padding: 20px;
+        z-index: 2;
     }
 
     .card {
         border: none;
-        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.98);
+    }
+
+    .card-body {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 </style>

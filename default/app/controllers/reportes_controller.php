@@ -18,7 +18,6 @@ class ReportesController extends AppController
 
     public function registrar()
     {
-        // Requiere estar autenticado
         Auth::require();
 
         $this->reporte = new Reportes();
@@ -47,7 +46,7 @@ class ReportesController extends AppController
                 }
 
                 Flash::valid('El reporte se registró correctamente');
-                return Redirect::to("reportes/index");
+                return Redirect::to("reportes/mis_reportes");
             } else {
                 Flash::error('No se pudo registrar el reporte');
             }
@@ -86,7 +85,6 @@ class ReportesController extends AppController
         if (Input::hasPost("reporte")) {
             $params = Input::post("reporte");
 
-            // Manejar la foto ANTES de actualizar
             if (!empty($_FILES["foto"]["name"])) {
                 $tmp = $_FILES["foto"]["tmp_name"];
                 $dest = dirname(APP_PATH) . "/public/storage/reportes/{$this->reporte->id}.jpg";
@@ -106,7 +104,7 @@ class ReportesController extends AppController
 
             if ($this->reporte->update($params)) {
                 Flash::valid('El reporte se actualizó correctamente');
-                return Redirect::to("reportes/index");
+                return Redirect::to("reportes/mis_reportes");
             } else {
                 Flash::error('No se pudo actualizar el reporte');
             }
@@ -117,8 +115,6 @@ class ReportesController extends AppController
     {
         // Requiere autenticación
         Auth::require();
-
-        // Obtener reportes del usuario autenticado
         $usuario_id = Auth::id();
 
         $this->reportes = (new Reportes())->find("conditions: usuario_id = $usuario_id", "order: created_at DESC");

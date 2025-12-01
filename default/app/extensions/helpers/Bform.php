@@ -193,15 +193,29 @@ class Bform
 
     /**
      * Botón Volver/Regresar
+     * Soporta tanto URLs normales como javascript:history.back()
      */
     public static function btn_volver($url, $texto = 'Volver', $attrs = [])
     {
         $attrs = Bform::attrsdefaut($attrs, ["class" => "btn btn-secondary"]);
-        $attrsStr = Tag::getAttrs($attrs);
 
-        return '<a href="' . PUBLIC_PATH . $url . '" ' . $attrsStr . '>
-            <i class="ti ti-arrow-left"></i> ' . $texto . '
-        </a>';
+        // Detectar si es JavaScript
+        if (stripos($url, 'javascript:') === 0) {
+            // Extraer el código JavaScript
+            $jsCode = substr($url, 11); // Quitar "javascript:"
+            $attrs['onclick'] = $jsCode;
+            $attrsStr = Tag::getAttrs($attrs);
+
+            return '<button type="button" ' . $attrsStr . '>
+                <i class="ti ti-arrow-left"></i> ' . $texto . '
+            </button>';
+        } else {
+            // Enlace normal
+            $attrsStr = Tag::getAttrs($attrs);
+            return '<a href="' . PUBLIC_PATH . $url . '" ' . $attrsStr . '>
+                <i class="ti ti-arrow-left"></i> ' . $texto . '
+            </a>';
+        }
     }
 
     /**
@@ -216,5 +230,4 @@ class Bform
             <i class="ti ti-settings me-1"></i> ' . $texto . '
         </a>';
     }
-
 }

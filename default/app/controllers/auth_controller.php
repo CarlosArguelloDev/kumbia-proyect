@@ -6,7 +6,6 @@ class AuthController extends AppController
 {
     public function initialize()
     {
-        // Usar template auth sin sidebar
         View::template('auth');
     }
 
@@ -44,7 +43,6 @@ class AuthController extends AppController
         if (Input::hasPost('usuario')) {
             $data = Input::post('usuario');
 
-            // Validar que el email no exista
             $existe = (new Usuarios())->find_first("email = '{$data['email']}'");
             if ($existe) {
                 Flash::error('El email ya está registrado');
@@ -53,7 +51,7 @@ class AuthController extends AppController
 
             // Hash de la contraseña
             $data['password'] = hash('sha256', $data['password']);
-            $data['rol_id'] = 3; // Rol de usuario estándar
+            $data['rol_id'] = 3;
             $data['activo'] = 1;
 
             $usuario = new Usuarios($data);

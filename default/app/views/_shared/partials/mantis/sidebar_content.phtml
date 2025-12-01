@@ -5,101 +5,103 @@
                 <span class="pc-micon"><i class="ti ti-user-circle"></i></span>
                 <span class="pc-mtext">
                     <?php if (Auth::check()): ?>
-                        Hola: <?= Auth::user()['nombre'] ?><br>
+                        <span class="pc-micon"><i class="ti ti-user-check"></i></span><?= Auth::user()['nombre'] ?><br>
 
                     <?php else: ?>
-                        Invitado
+                        <a href="<?= PUBLIC_PATH ?>auth/login" class="pc-link">
+                            <span class="pc-micon"><i class="ti ti-login"></i></span>
+                            <span class="pc-mtext">Iniciar Sesión</span>
+                        </a>
                     <?php endif; ?>
                 </span>
             </a>
         </li>
         <?php if (Auth::check()): ?>
             <li class="pc-item">
-                <a href="/proyecto/default/public/auth/logout" class="pc-link">
+                <a href="<?= PUBLIC_PATH ?>auth/logout" class="pc-link">
                     <span class="pc-micon"><i class="ti ti-logout"></i></span>
                     <span class="pc-mtext">Cerrar Sesión</span>
                 </a>
             </li>
+
         <?php endif; ?>
 
-        <!-- Sección Administración -->
-        <li class="pc-item pc-caption">
-            <label>Administración</label>
-            <i class="ti ti-settings"></i>
-        </li>
-        <li class="pc-item">
-            <a href="/proyecto/default/public/admin/dashboard" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
-                <span class="pc-mtext">Dashboard Admin</span>
-            </a>
-        </li>
-        <li class="pc-item">
-            <a href="/proyecto/default/public/reportes/admin" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-report-analytics"></i></span>
-                <span class="pc-mtext">Gestionar Reportes</span>
-            </a>
-        </li>
-        <li class="pc-item">
-            <a href="/proyecto/default/public/usuarios" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-users"></i></span>
-                <span class="pc-mtext">Usuarios</span>
-            </a>
-        </li>
-        <li class="pc-item">
-            <a href="/proyecto/default/public/comentarios" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-message"></i></span>
-                <span class="pc-mtext">Comentarios</span>
-            </a>
-        </li>
+        <!-- Sección Administración - Solo para Administradores -->
+        <?php if (Auth::check() && Auth::user()['rol_id'] == 1): ?>
+            <li class="pc-item pc-caption">
+                <label>Administración</label>
+                <i class="ti ti-settings"></i>
+            </li>
+            <li class="pc-item">
+                <a href="<?= PUBLIC_PATH ?>admin/dashboard" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
+                    <span class="pc-mtext">Dashboard Admin</span>
+                </a>
+            </li>
+            <li class="pc-item">
+                <a href="<?= PUBLIC_PATH ?>reportes/admin" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-report-analytics"></i></span>
+                    <span class="pc-mtext">Gestionar Reportes</span>
+                </a>
+            </li>
+            <li class="pc-item">
+                <a href="<?= PUBLIC_PATH ?>usuarios" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-users"></i></span>
+                    <span class="pc-mtext">Usuarios</span>
+                </a>
+            </li>
+            <li class="pc-item">
+                <a href="<?= PUBLIC_PATH ?>comentarios" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-message"></i></span>
+                    <span class="pc-mtext">Comentarios</span>
+                </a>
+            </li>
+        <?php endif; ?>
 
         <!-- Sección Usuario -->
-        <li class="pc-item pc-caption">
-            <label>Usuario</label>
-            <i class="ti ti-user-circle"></i>
-        </li>
-        <li class="pc-item">
-            <a href="/proyecto/default/public/reportes/mis_reportes" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-file-text"></i></span>
-                <span class="pc-mtext">Mis Reportes</span>
-            </a>
-        </li>
-        <li class="pc-item">
-            <a href="/proyecto/default/public/usuarios/perfil" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-id"></i></span>
-                <span class="pc-mtext">Mi Perfil</span>
-            </a>
-        </li>
+        <?php if (Auth::check()): ?>
+            <li class="pc-item pc-caption">
+                <label>Usuario</label>
+                <i class="ti ti-user-circle"></i>
+            </li>
+            <li class="pc-item">
+                <a href="<?= PUBLIC_PATH ?>reportes/mis_reportes" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-file-text"></i></span>
+                    <span class="pc-mtext">Mis Reportes</span>
+                </a>
+            </li>
+            <li class="pc-item">
+                <a href="<?= PUBLIC_PATH ?>usuarios/perfil" class="pc-link">
+                    <span class="pc-micon"><i class="ti ti-id"></i></span>
+                    <span class="pc-mtext">Mi Perfil</span>
+                </a>
+            </li>
+        <?php endif; ?>
 
         <li class="pc-item pc-caption">
             <label>Secciones</label>
             <i class="ti ti-dashboard"></i>
         </li>
         <li class="pc-item">
-            <a href="/proyecto/default/public/reportes" class="pc-link">
+            <a href="<?= PUBLIC_PATH ?>reportes" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-report"></i></span>
                 <span class="pc-mtext">Reportes</span>
             </a>
         </li>
         <li class="pc-item">
-            <a href="/proyecto/default/public/zonas" class="pc-link">
+            <a href="<?= PUBLIC_PATH ?>zonas" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-map-2"></i></span>
                 <span class="pc-mtext">Zonas</span>
             </a>
         </li>
         <li class="pc-item">
-            <a href="/proyecto/default/public/reportes/atendidos" class="pc-link">
+            <a href="<?= PUBLIC_PATH ?>reportes/atendidos" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-circle-check"></i></span>
                 <span class="pc-mtext">Reportes Atendidos</span>
             </a>
         </li>
         <li class="pc-item">
-            <a href="" class="pc-link">
-                <span class="pc-micon"><i class="ti ti-database-export"></i></span>
-                <span class="pc-mtext">Exportar datos</span>
-            </a>
-        </li>
-        <li class="pc-item">
-            <a href="" class="pc-link">
+            <a href="<?= PUBLIC_PATH ?>acerca" class="pc-link">
                 <span class="pc-micon"><i class="ti ti-heart"></i></span>
                 <span class="pc-mtext">Acerca de</span>
             </a>

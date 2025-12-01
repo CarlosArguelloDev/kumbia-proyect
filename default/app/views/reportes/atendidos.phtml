@@ -1,25 +1,22 @@
-<h1><?=  $title ?></h1>
+<h1><?= $title ?></h1>
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <h5><?=  $subtitle ?></h5>
+                <h5><?= $subtitle ?></h5>
             </div>
             <div class="card-body">
                 <!-- Contenidoend -->
-                <button type="button" class="btn btn-primary d-inline-flex"><i class="ti ti-plus"></i>Realizar reporte</button>
+                <?= Bform::btn_agregar("reportes/registrar", "Realizar reporte") ?>
                 <br><br>
 
                 <?php foreach ($reportes as $r): ?>
                     <div class="card overflow-hidden mb-3">
                         <div class="row g-0">
                             <div class="col-md-4">
-                                <img
-                                        src="<?= PUBLIC_PATH ?>storage/reportes/<?= $r->id ?>.jpg"
-                                        alt="Imagen Reporte <?= $r->id ?>"
-                                        width="256"
-                                        class="img-fluid"
-                                >
+                                <img src="<?= PUBLIC_PATH ?>storage/reportes/<?= $r->id ?>.jpg"
+                                    alt="Imagen Reporte <?= $r->id ?>" class="img-fluid w-100"
+                                    style="object-fit: cover; max-height: 300px;">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
@@ -29,9 +26,9 @@
                                     </h5>
                                     <!-- Badges -->
                                     <span class="badge bg-light-warning">
-                        <i class="ti ti-ruler-2"></i>
-                        Diámetro: <?= $r->diametro ?>cm
-                    </span>
+                                        <i class="ti ti-ruler-2"></i>
+                                        Diámetro: <?= $r->diametro ?>cm
+                                    </span>
                                     <?= Bform::badge_estado($r->getEstados()) ?>
                                     <?= Bform::badge_prioridad($r->getPrioridades()) ?>
                                     <!-- Atributos -->
@@ -52,15 +49,17 @@
                                         <br><br>
                                         <!-- Links  -->
                                         <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>" class="card-link">Ver Más</a>
-                                        <a href="#!" class="card-link" onclick="toggleComentarios(<?= $r->id ?>)">Comentarios</a>
+                                        <a href="#!" class="card-link"
+                                            onclick="toggleComentarios(<?= $r->id ?>)">Comentarios</a>
 
                                     </p>
-                                </div></div>
+                                </div>
+                            </div>
                             <div id="comentarios-<?= $r->id ?>" class="mt-2" style="display:none;">
                                 <h6><i class="ti ti-message-2"></i> Comentarios</h6>
 
                                 <?php $comments = (new Comentarios)->find("reporte_id = {$r->id}", "order: created_at DESC"); ?>
-                                
+
                                 <?php if (is_countable($comments) && count($comments) > 0): ?>
                                     <?php foreach ($comments as $c): ?>
                                         <div class="border rounded p-3 mb-3">
@@ -88,11 +87,8 @@
 
                                     <input type="hidden" name="comentario[reporte_id]" value="<?= $r->id ?>">
 
-                                    <textarea name="comentario[texto]"
-                                              class="form-control mb-2"
-                                              rows="3"
-                                              placeholder="Escribe un comentario..."
-                                              required></textarea>
+                                    <textarea name="comentario[texto]" class="form-control mb-2" rows="3"
+                                        placeholder="Escribe un comentario..." required></textarea>
 
                                     <button class="btn btn-primary btn-sm">
                                         <i class="ti ti-send"></i> Enviar
