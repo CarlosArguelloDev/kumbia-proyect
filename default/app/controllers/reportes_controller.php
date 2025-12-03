@@ -3,7 +3,61 @@ class ReportesController extends AppController
 {
     public function index()
     {
-        $this->reportes = (new Reportes())->find();
+        // Obtener parámetros de filtro
+        $estado_id = Input::get('estado_id');
+        $prioridad_id = Input::get('prioridad_id');
+        $fecha_desde = Input::get('fecha_desde');
+        $fecha_hasta = Input::get('fecha_hasta');
+        $busqueda = Input::get('busqueda');
+
+        // Construir condiciones de filtro
+        $conditions = [];
+
+        if ($estado_id) {
+            $conditions[] = "estado_id = " . (int) $estado_id;
+        }
+
+        if ($prioridad_id) {
+            $conditions[] = "prioridad_id = " . (int) $prioridad_id;
+        }
+
+        if ($fecha_desde) {
+            $conditions[] = "DATE(created_at) >= '" . date('Y-m-d', strtotime($fecha_desde)) . "'";
+        }
+
+        if ($fecha_hasta) {
+            $conditions[] = "DATE(created_at) <= '" . date('Y-m-d', strtotime($fecha_hasta)) . "'";
+        }
+
+        if ($busqueda) {
+            $busqueda_safe = addslashes($busqueda);
+            $conditions[] = "(titulo LIKE '%{$busqueda_safe}%' OR descripcion LIKE '%{$busqueda_safe}%' OR direccion LIKE '%{$busqueda_safe}%')";
+        }
+
+        // Construir query
+        $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
+        $order = "order: created_at DESC";
+
+        // Obtener reportes filtrados
+        if ($where) {
+            $this->reportes = (new Reportes())->find($where, $order);
+        } else {
+            $this->reportes = (new Reportes())->find($order);
+        }
+
+        // Obtener opciones para filtros
+        $this->estados = (new Estados())->find();
+        $this->prioridades = (new Prioridades())->find();
+
+        // Pasar valores de filtros actuales a la vista
+        $this->filtros = [
+            'estado_id' => $estado_id,
+            'prioridad_id' => $prioridad_id,
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta,
+            'busqueda' => $busqueda
+        ];
+
         $this->title = 'Reportes';
         $this->subtitle = 'Listado de baches';
     }
@@ -15,6 +69,7 @@ class ReportesController extends AppController
         $this->title = 'Reportes Atendidos';
         $this->subtitle = 'Listado de baches';
     }
+
 
     public function registrar()
     {
@@ -117,7 +172,57 @@ class ReportesController extends AppController
         Auth::require();
         $usuario_id = Auth::id();
 
-        $this->reportes = (new Reportes())->find("conditions: usuario_id = $usuario_id", "order: created_at DESC");
+        // Obtener parámetros de filtro
+        $estado_id = Input::get('estado_id');
+        $prioridad_id = Input::get('prioridad_id');
+        $fecha_desde = Input::get('fecha_desde');
+        $fecha_hasta = Input::get('fecha_hasta');
+        $busqueda = Input::get('busqueda');
+
+        // Construir condiciones de filtro
+        $conditions = ["usuario_id = $usuario_id"];
+
+        if ($estado_id) {
+            $conditions[] = "estado_id = " . (int) $estado_id;
+        }
+
+        if ($prioridad_id) {
+            $conditions[] = "prioridad_id = " . (int) $prioridad_id;
+        }
+
+        if ($fecha_desde) {
+            $conditions[] = "DATE(created_at) >= '" . date('Y-m-d', strtotime($fecha_desde)) . "'";
+        }
+
+        if ($fecha_hasta) {
+            $conditions[] = "DATE(created_at) <= '" . date('Y-m-d', strtotime($fecha_hasta)) . "'";
+        }
+
+        if ($busqueda) {
+            $busqueda_safe = addslashes($busqueda);
+            $conditions[] = "(titulo LIKE '%{$busqueda_safe}%' OR descripcion LIKE '%{$busqueda_safe}%' OR direccion LIKE '%{$busqueda_safe}%')";
+        }
+
+        // Construir query
+        $where = "conditions: " . implode(" AND ", $conditions);
+        $order = "order: created_at DESC";
+
+        // Obtener reportes filtrados
+        $this->reportes = (new Reportes())->find($where, $order);
+
+        // Obtener opciones para filtros
+        $this->estados = (new Estados())->find();
+        $this->prioridades = (new Prioridades())->find();
+
+        // Pasar valores de filtros actuales a la vista
+        $this->filtros = [
+            'estado_id' => $estado_id,
+            'prioridad_id' => $prioridad_id,
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta,
+            'busqueda' => $busqueda
+        ];
+
         $this->title = 'Mis Reportes';
         $this->subtitle = 'Gestiona tus reportes';
     }
@@ -154,9 +259,61 @@ class ReportesController extends AppController
         // Solo administradores pueden gestionar reportes
         Auth::requireAdmin();
 
-        $this->reportes = (new Reportes())->find("order: created_at DESC");
+        // Obtener parámetros de filtro
+        $estado_id = Input::get('estado_id');
+        $prioridad_id = Input::get('prioridad_id');
+        $fecha_desde = Input::get('fecha_desde');
+        $fecha_hasta = Input::get('fecha_hasta');
+        $busqueda = Input::get('busqueda');
+
+        // Construir condiciones de filtro
+        $conditions = [];
+
+        if ($estado_id) {
+            $conditions[] = "estado_id = " . (int) $estado_id;
+        }
+
+        if ($prioridad_id) {
+            $conditions[] = "prioridad_id = " . (int) $prioridad_id;
+        }
+
+        if ($fecha_desde) {
+            $conditions[] = "DATE(created_at) >= '" . date('Y-m-d', strtotime($fecha_desde)) . "'";
+        }
+
+        if ($fecha_hasta) {
+            $conditions[] = "DATE(created_at) <= '" . date('Y-m-d', strtotime($fecha_hasta)) . "'";
+        }
+
+        if ($busqueda) {
+            $busqueda_safe = addslashes($busqueda);
+            $conditions[] = "(titulo LIKE '%{$busqueda_safe}%' OR descripcion LIKE '%{$busqueda_safe}%' OR direccion LIKE '%{$busqueda_safe}%')";
+        }
+
+        // Construir query
+        $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
+        $order = "order: created_at DESC";
+
+        // Obtener reportes filtrados
+        if ($where) {
+            $this->reportes = (new Reportes())->find($where, $order);
+        } else {
+            $this->reportes = (new Reportes())->find($order);
+        }
+
+        // Obtener opciones para filtros
         $this->estados = (new Estados())->find();
         $this->prioridades = (new Prioridades())->find();
+
+        // Pasar valores de filtros actuales a la vista
+        $this->filtros = [
+            'estado_id' => $estado_id,
+            'prioridad_id' => $prioridad_id,
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta,
+            'busqueda' => $busqueda
+        ];
+
         $this->title = 'Gestión de Reportes';
         $this->subtitle = 'Panel de Administración';
     }

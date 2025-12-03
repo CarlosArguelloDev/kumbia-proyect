@@ -9,6 +9,8 @@
     </div>
 </div>
 
+<?php View::partial('usuarios/_filtros'); ?>
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
@@ -25,30 +27,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($usuarios as $u): ?>
+                    <?php if (count($usuarios) > 0): ?>
+                        <?php foreach ($usuarios as $u): ?>
+                            <tr>
+                                <td><?= $u->id ?></td>
+                                <td><?= $u->nombre ?></td>
+                                <td><?= $u->email ?></td>
+                                <td><?= $u->telefono ?? '-' ?></td>
+                                <td>
+                                    <?php if ($u->activo == 1): ?>
+                                        <span class="badge bg-success">Activo</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-danger">Inactivo</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <small><?= date('d/m/Y', strtotime($u->created_at)) ?></small>
+                                </td>
+                                <td>
+                                    <?= Bform::grupo_acciones($u->id, 'usuarios', [
+                                        'ver' => false,
+                                        'mensaje_eliminar' => '¿Estás seguro de eliminar este usuario?'
+                                    ]) ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                         <tr>
-                            <td><?= $u->id ?></td>
-                            <td><?= $u->nombre ?></td>
-                            <td><?= $u->email ?></td>
-                            <td><?= $u->telefono ?? '-' ?></td>
-                            <td>
-                                <?php if ($u->activo == 1): ?>
-                                    <span class="badge bg-success">Activo</span>
-                                <?php else: ?>
-                                    <span class="badge bg-danger">Inactivo</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <small><?= date('d/m/Y', strtotime($u->created_at)) ?></small>
-                            </td>
-                            <td>
-                                <?= Bform::grupo_acciones($u->id, 'usuarios', [
-                                    'ver' => false,
-                                    'mensaje_eliminar' => '¿Estás seguro de eliminar este usuario?'
-                                ]) ?>
+                            <td colspan="7" class="text-center text-muted">
+                                <i class="ti ti-user-off" style="font-size: 3rem;"></i>
+                                <p>No se encontraron usuarios con los filtros aplicados.</p>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

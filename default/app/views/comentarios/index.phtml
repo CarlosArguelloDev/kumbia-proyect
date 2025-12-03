@@ -4,6 +4,8 @@
     <?= Bform::btn_volver('javascript:history.back()', 'Volver') ?>
 </div>
 
+<?php View::partial('comentarios/_filtros'); ?>
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
@@ -19,25 +21,34 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($comentarios as $c): ?>
+                    <?php if (count($comentarios) > 0): ?>
+                        <?php foreach ($comentarios as $c): ?>
+                            <tr>
+                                <td><?= $c->id ?></td>
+                                <td><?= $c->getUsuarios()->nombre ?></td>
+                                <td>
+                                    <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $c->reporte_id ?>">
+                                        #<?= $c->reporte_id ?>
+                                    </a>
+                                </td>
+                                <td><?= $c->texto ?></td>
+                                <td>
+                                    <small><?= date('d/m/Y H:i', strtotime($c->created_at)) ?></small>
+                                </td>
+                                <td>
+                                    <?= Bform::btn_ver("reportes/ver/{$c->reporte_id}", ['title' => 'Ver Reporte']) ?>
+                                    <?= Bform::btn_eliminar_link("comentarios/eliminar/{$c->id}", '¿Estás seguro de eliminar este comentario?') ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                         <tr>
-                            <td><?= $c->id ?></td>
-                            <td><?= $c->getUsuarios()->nombre ?></td>
-                            <td>
-                                <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $c->reporte_id ?>">
-                                    #<?= $c->reporte_id ?>
-                                </a>
-                            </td>
-                            <td><?= $c->texto ?></td>
-                            <td>
-                                <small><?= date('d/m/Y H:i', strtotime($c->created_at)) ?></small>
-                            </td>
-                            <td>
-                                <?= Bform::btn_ver("reportes/ver/{$c->reporte_id}", ['title' => 'Ver Reporte']) ?>
-                                <?= Bform::btn_eliminar_link("comentarios/eliminar/{$c->id}", '¿Estás seguro de eliminar este comentario?') ?>
+                            <td colspan="6" class="text-center text-muted">
+                                <i class="ti ti-message-off" style="font-size: 3rem;"></i>
+                                <p>No se encontraron comentarios con los filtros aplicados.</p>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>

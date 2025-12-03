@@ -15,14 +15,56 @@ class ComentariosController extends AppController
 
     public function index()
     {
-        // Obtener comentarios con orden descendente
-        $comentarios_raw = (new Comentarios())->find("order: created_at DESC");
+        // Obtener parámetros de filtro
+        $busqueda = Input::get('busqueda');
+        $reporte_id = Input::get('reporte_id');
+        $fecha_desde = Input::get('fecha_desde');
+        $fecha_hasta = Input::get('fecha_hasta');
+
+        // Construir condiciones de filtro
+        $conditions = [];
+
+        if ($busqueda) {
+            $busqueda_safe = addslashes($busqueda);
+            $conditions[] = "texto LIKE '%{$busqueda_safe}%'";
+        }
+
+        if ($reporte_id) {
+            $conditions[] = "reporte_id = " . (int) $reporte_id;
+        }
+
+        if ($fecha_desde) {
+            $conditions[] = "DATE(created_at) >= '" . date('Y-m-d', strtotime($fecha_desde)) . "'";
+        }
+
+        if ($fecha_hasta) {
+            $conditions[] = "DATE(created_at) <= '" . date('Y-m-d', strtotime($fecha_hasta)) . "'";
+        }
+
+        // Construir query
+        $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
+        $order = "order: created_at DESC";
+
+        // Obtener comentarios filtrados
+        if ($where) {
+            $comentarios_raw = (new Comentarios())->find($where, $order);
+        } else {
+            $comentarios_raw = (new Comentarios())->find($order);
+        }
 
         // Cargar las relaciones manualmente si es necesario
         $this->comentarios = [];
         foreach ($comentarios_raw as $comentario) {
             $this->comentarios[] = $comentario;
         }
+
+        // Pasar valores de filtros actuales a la vista
+        $this->filtros = [
+            'busqueda' => $busqueda,
+            'reporte_id' => $reporte_id,
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta
+        ];
 
         $this->title = 'Gestión de Comentarios';
         $this->subtitle = 'Todos los comentarios';

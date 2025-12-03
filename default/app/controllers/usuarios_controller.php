@@ -18,7 +18,51 @@ class UsuariosController extends AppController
 
     public function index()
     {
-        $this->usuarios = (new Usuarios())->find("order: id ASC");
+        // Obtener parámetros de filtro
+        $busqueda = Input::get('busqueda');
+        $activo = Input::get('activo');
+        $fecha_desde = Input::get('fecha_desde');
+        $fecha_hasta = Input::get('fecha_hasta');
+
+        // Construir condiciones de filtro
+        $conditions = [];
+
+        if ($busqueda) {
+            $busqueda_safe = addslashes($busqueda);
+            $conditions[] = "(nombre LIKE '%{$busqueda_safe}%' OR email LIKE '%{$busqueda_safe}%')";
+        }
+
+        if ($activo !== '' && $activo !== null) {
+            $conditions[] = "activo = " . (int) $activo;
+        }
+
+        if ($fecha_desde) {
+            $conditions[] = "DATE(created_at) >= '" . date('Y-m-d', strtotime($fecha_desde)) . "'";
+        }
+
+        if ($fecha_hasta) {
+            $conditions[] = "DATE(created_at) <= '" . date('Y-m-d', strtotime($fecha_hasta)) . "'";
+        }
+
+        // Construir query
+        $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
+        $order = "order: id ASC";
+
+        // Obtener usuarios filtrados
+        if ($where) {
+            $this->usuarios = (new Usuarios())->find($where, $order);
+        } else {
+            $this->usuarios = (new Usuarios())->find($order);
+        }
+
+        // Pasar valores de filtros actuales a la vista
+        $this->filtros = [
+            'busqueda' => $busqueda,
+            'activo' => $activo,
+            'fecha_desde' => $fecha_desde,
+            'fecha_hasta' => $fecha_hasta
+        ];
+
         $this->title = 'Gestión de Usuarios';
         $this->subtitle = 'Listado completo';
     }

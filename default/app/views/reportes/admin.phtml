@@ -9,6 +9,11 @@
     </div>
 </div>
 
+<?php
+$action_url = PUBLIC_PATH . 'reportes/admin';
+View::partial('reportes/_filtros');
+?>
+
 <div class="card">
     <div class="card-body">
         <div class="table-responsive">
@@ -25,49 +30,58 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($reportes as $r): ?>
+                    <?php if (count($reportes) > 0): ?>
+                        <?php foreach ($reportes as $r): ?>
+                            <tr>
+                                <td><?= $r->id ?></td>
+                                <td><?= $r->titulo ?></td>
+                                <td><?= $r->getUsuarios()->nombre ?></td>
+                                <td>
+                                    <!-- Cambiar Estado -->
+                                    <form method="post" action="<?= PUBLIC_PATH ?>reportes/cambiar_estado/<?= $r->id ?>"
+                                        class="d-inline">
+                                        <select name="estado_id" class="form-select form-select-sm"
+                                            onchange="this.form.submit()" style="width: auto;">
+                                            <?php foreach ($estados as $e): ?>
+                                                <option value="<?= $e->id ?>" <?= $r->estado_id == $e->id ? 'selected' : '' ?>>
+                                                    <?= $e->nombre ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <!-- Cambiar Prioridad -->
+                                    <form method="post" action="<?= PUBLIC_PATH ?>reportes/cambiar_prioridad/<?= $r->id ?>"
+                                        class="d-inline">
+                                        <select name="prioridad_id" class="form-select form-select-sm"
+                                            onchange="this.form.submit()" style="width: auto;">
+                                            <?php foreach ($prioridades as $p): ?>
+                                                <option value="<?= $p->id ?>" <?= $r->prioridad_id == $p->id ? 'selected' : '' ?>>
+                                                    <?= $p->nombre ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <small><?= date('d/m/Y', strtotime($r->created_at)) ?></small>
+                                </td>
+                                <td>
+                                    <?= Bform::grupo_acciones($r->id, 'reportes', [
+                                        'mensaje_eliminar' => '¿Estás seguro de eliminar este reporte?'
+                                    ]) ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
                         <tr>
-                            <td><?= $r->id ?></td>
-                            <td><?= $r->titulo ?></td>
-                            <td><?= $r->getUsuarios()->nombre ?></td>
-                            <td>
-                                <!-- Cambiar Estado -->
-                                <form method="post" action="<?= PUBLIC_PATH ?>reportes/cambiar_estado/<?= $r->id ?>"
-                                    class="d-inline">
-                                    <select name="estado_id" class="form-select form-select-sm"
-                                        onchange="this.form.submit()" style="width: auto;">
-                                        <?php foreach ($estados as $e): ?>
-                                            <option value="<?= $e->id ?>" <?= $r->estado_id == $e->id ? 'selected' : '' ?>>
-                                                <?= $e->nombre ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </form>
-                            </td>
-                            <td>
-                                <!-- Cambiar Prioridad -->
-                                <form method="post" action="<?= PUBLIC_PATH ?>reportes/cambiar_prioridad/<?= $r->id ?>"
-                                    class="d-inline">
-                                    <select name="prioridad_id" class="form-select form-select-sm"
-                                        onchange="this.form.submit()" style="width: auto;">
-                                        <?php foreach ($prioridades as $p): ?>
-                                            <option value="<?= $p->id ?>" <?= $r->prioridad_id == $p->id ? 'selected' : '' ?>>
-                                                <?= $p->nombre ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </form>
-                            </td>
-                            <td>
-                                <small><?= date('d/m/Y', strtotime($r->created_at)) ?></small>
-                            </td>
-                            <td>
-                                <?= Bform::grupo_acciones($r->id, 'reportes', [
-                                    'mensaje_eliminar' => '¿Estás seguro de eliminar este reporte?'
-                                ]) ?>
+                            <td colspan="7" class="text-center text-muted">
+                                <i class="ti ti-folder-off" style="font-size: 3rem;"></i>
+                                <p>No se encontraron reportes con los filtros aplicados.</p>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
