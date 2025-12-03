@@ -5,7 +5,7 @@
 require_once CORE_PATH . 'kumbia/controller.php';
 
 // Cargar clase Auth
-require_once APP_PATH . 'libs/Auth.php';
+require_once APP_PATH . 'libs/auth.php';
 
 /**
  * Controlador principal que heredan los controladores

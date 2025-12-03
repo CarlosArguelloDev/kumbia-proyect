@@ -44,7 +44,12 @@
             <div class="card-body">
 
                 <label>Selecciona ubicación en el mapa</label>
-                <div id="map" style="height: 420px; border-radius:12px;"></div>
+                <div class="mb-2">
+                    <button type="button" id="btn-usar-ubicacion" class="btn btn-primary btn-sm">
+                        <i class="bi bi-geo-alt-fill"></i> Usar mi ubicación
+                    </button>
+                </div>
+                <div id="map" style="height: 380px; border-radius:12px;"></div>
                 <small class="text-muted">
                     Da click para poner marcador o arrástralo para ajustar.
                 </small>
@@ -77,9 +82,11 @@
     <?php if (isset($reporte) && $reporte->id && $reporte->latitud && $reporte->longitud): ?>
         // Si hay un reporte existente, usar sus coordenadas
         const centro = [<?= $reporte->latitud ?>, <?= $reporte->longitud ?>];
+        const direccionInicial = "<?= addslashes($reporte->direccion ?? '') ?>";
     <?php else: ?>
         // Centro por defecto
         const centro = [20.3712465, -99.9830166];
+        const direccionInicial = "";
     <?php endif; ?>
 
     const map = L.map('map').setView(centro, 14);
@@ -90,33 +97,71 @@
 
     let marker = L.marker(centro, { draggable: true }).addTo(map);
 
-    function setLocation(lat, lng) {
+    function setLocation(lat, lng, updateAddress = true) {
         document.getElementById("latitud").value = lat;
         document.getElementById("longitud").value = lng;
 
         // Reverse geocoding (Nominatim) -> autollenar dirección
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
-            .then(r => r.json())
-            .then(data => {
-                if (data && data.display_name) {
-                    const dirInput = document.getElementById("direccion");
-                    if (dirInput && !dirInput.value) {
-                        dirInput.value = data.display_name;
+        if (updateAddress) {
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`)
+                .then(r => r.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        const dirInput = document.getElementById("direccion");
+                        if (dirInput) {
+                            dirInput.value = data.display_name;
+                        }
                     }
-                }
-            })
-            .catch(() => { });
+                })
+                .catch(() => { });
+        }
     }
 
-    setLocation(centro[0], centro[1]);
+    // Inicializar ubicación
+    setLocation(centro[0], centro[1], !direccionInicial);
+
+    // Si hay dirección inicial (modo edición), establecerla
+    if (direccionInicial) {
+        document.getElementById("direccion").value = direccionInicial;
+    }
+
+    // Botón para usar ubicación del usuario
+    document.getElementById("btn-usar-ubicacion").addEventListener("click", function() {
+        if (navigator.geolocation) {
+            this.disabled = true;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Obteniendo ubicación...';
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    // Mover el mapa y el marcador a la ubicación del usuario
+                    map.setView([lat, lng], 16);
+                    marker.setLatLng([lat, lng]);
+                    setLocation(lat, lng, true);
+                    
+                    this.disabled = false;
+                    this.innerHTML = '<i class="bi bi-geo-alt-fill"></i> Usar mi ubicación';
+                },
+                (error) => {
+                    alert("No se pudo obtener tu ubicación. Por favor, verifica los permisos del navegador.");
+                    this.disabled = false;
+                    this.innerHTML = '<i class="bi bi-geo-alt-fill"></i> Usar mi ubicación';
+                }
+            );
+        } else {
+            alert("Tu navegador no soporta geolocalización.");
+        }
+    });
 
     map.on('click', function (e) {
         marker.setLatLng(e.latlng);
-        setLocation(e.latlng.lat, e.latlng.lng);
+        setLocation(e.latlng.lat, e.latlng.lng, true);
     });
 
     marker.on('dragend', function (e) {
         const p = e.target.getLatLng();
-        setLocation(p.lat, p.lng);
+        setLocation(p.lat, p.lng, true);
     });
 </script>
