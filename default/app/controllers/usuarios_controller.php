@@ -1,30 +1,24 @@
 <?php
-/**
- * Controlador de Usuarios
- */
 class UsuariosController extends AppController
 {
     public function initialize()
     {
-        // Llamar al initialize del padre
         parent::initialize();
 
-        // Solo admins pueden gestionar usuarios
         $action = Router::get('action');
         if ($action !== 'perfil') {
             Auth::requireAdmin();
         }
     }
 
+    // Listado de usuarios con filtros
     public function index()
     {
-        // Obtener parámetros de filtro
         $busqueda = Input::get('busqueda');
         $activo = Input::get('activo');
         $fecha_desde = Input::get('fecha_desde');
         $fecha_hasta = Input::get('fecha_hasta');
 
-        // Construir condiciones de filtro
         $conditions = [];
 
         if ($busqueda) {
@@ -44,18 +38,15 @@ class UsuariosController extends AppController
             $conditions[] = "DATE(created_at) <= '" . date('Y-m-d', strtotime($fecha_hasta)) . "'";
         }
 
-        // Construir query
         $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
         $order = "order: id ASC";
 
-        // Obtener usuarios filtrados
         if ($where) {
             $this->usuarios = (new Usuarios())->find($where, $order);
         } else {
             $this->usuarios = (new Usuarios())->find($order);
         }
 
-        // Pasar valores de filtros actuales a la vista
         $this->filtros = [
             'busqueda' => $busqueda,
             'activo' => $activo,
@@ -67,6 +58,7 @@ class UsuariosController extends AppController
         $this->subtitle = 'Listado completo';
     }
 
+    // Creación de usuarios
     public function crear()
     {
         $this->title = 'Crear Usuario';
@@ -75,7 +67,6 @@ class UsuariosController extends AppController
         if (Input::hasPost('usuario')) {
             $data = Input::post('usuario');
 
-            // Hash de la contraseña directamente en password
             if (!empty($data['password'])) {
                 $data['password'] = hash('sha256', $data['password']);
             }
@@ -91,6 +82,7 @@ class UsuariosController extends AppController
         }
     }
 
+    // Edición de usuarios
     public function editar($id)
     {
         $this->usuario = (new Usuarios())->find_first((int) $id);
@@ -106,11 +98,9 @@ class UsuariosController extends AppController
         if (Input::hasPost('usuario')) {
             $data = Input::post('usuario');
 
-            // Si se proporciona una nueva contraseña, hashearla
             if (!empty($data['password'])) {
                 $data['password'] = hash('sha256', $data['password']);
             } else {
-                // Si no hay contraseña, no actualizar ese campo
                 unset($data['password']);
             }
 
@@ -123,6 +113,7 @@ class UsuariosController extends AppController
         }
     }
 
+    // Eliminación de usuarios
     public function eliminar($id)
     {
         $usuario = (new Usuarios())->find_first((int) $id);
@@ -141,11 +132,11 @@ class UsuariosController extends AppController
         return Redirect::to('usuarios');
     }
 
+    // Perfil del usuario
     public function perfil()
     {
         Auth::require();
 
-        // Obtener usuario autenticado
         $this->usuario = (new Usuarios())->find_first(Auth::id());
 
         if (!$this->usuario) {
@@ -159,7 +150,6 @@ class UsuariosController extends AppController
         if (Input::hasPost('usuario')) {
             $data = Input::post('usuario');
 
-            // Si se proporciona una nueva contraseña, hashearla
             if (!empty($data['password'])) {
                 $data['password'] = hash('sha256', $data['password']);
             } else {

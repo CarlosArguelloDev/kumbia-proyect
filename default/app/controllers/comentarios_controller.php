@@ -1,27 +1,20 @@
 <?php
-/**
- * Controlador de Comentarios
- */
 class ComentariosController extends AppController
 {
     public function initialize()
     {
-        // Llamar al initialize del padre
         parent::initialize();
-
-        // Solo admins pueden gestionar comentarios
         Auth::requireAdmin();
     }
 
+    // Listado de comentarios con filtros
     public function index()
     {
-        // Obtener parámetros de filtro
         $busqueda = Input::get('busqueda');
         $reporte_id = Input::get('reporte_id');
         $fecha_desde = Input::get('fecha_desde');
         $fecha_hasta = Input::get('fecha_hasta');
 
-        // Construir condiciones de filtro
         $conditions = [];
 
         if ($busqueda) {
@@ -41,24 +34,20 @@ class ComentariosController extends AppController
             $conditions[] = "DATE(created_at) <= '" . date('Y-m-d', strtotime($fecha_hasta)) . "'";
         }
 
-        // Construir query
         $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
         $order = "order: created_at DESC";
 
-        // Obtener comentarios filtrados
         if ($where) {
             $comentarios_raw = (new Comentarios())->find($where, $order);
         } else {
             $comentarios_raw = (new Comentarios())->find($order);
         }
 
-        // Cargar las relaciones manualmente si es necesario
         $this->comentarios = [];
         foreach ($comentarios_raw as $comentario) {
             $this->comentarios[] = $comentario;
         }
 
-        // Pasar valores de filtros actuales a la vista
         $this->filtros = [
             'busqueda' => $busqueda,
             'reporte_id' => $reporte_id,
@@ -70,18 +59,16 @@ class ComentariosController extends AppController
         $this->subtitle = 'Todos los comentarios';
     }
 
+    // Creación de comentarios
     public function crear($reporte_id = null)
     {
-        // Requiere autenticación para crear comentarios
         Auth::require();
-
         View::select(null, null);
 
         if (Input::hasPost('comentario')) {
-
             $data = Input::post('comentario');
             $data['reporte_id'] = (int) ($reporte_id ?: ($data['reporte_id'] ?? 0));
-            $data['usuario_id'] = Auth::id(); // Usuario autenticado
+            $data['usuario_id'] = Auth::id();
             $data['publico'] = 1;
             $comentario = new Comentarios($data);
             if ($comentario->create()) {
@@ -95,6 +82,7 @@ class ComentariosController extends AppController
         return Redirect::to("reportes/index");
     }
 
+    // Eliminación de comentarios
     public function eliminar($id)
     {
         $comentario = (new Comentarios())->find_first((int) $id);

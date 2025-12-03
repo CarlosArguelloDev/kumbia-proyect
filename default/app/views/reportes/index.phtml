@@ -154,7 +154,24 @@
                                         <small class="text-muted">
                                             <?= $r->getUsuarios()->nombre ?>
                                         </small>
-                                        <br><br>
+                                        <br>
+                                        <!-- Votos -->
+<div class="d-inline-flex align-items-center gap-2 border rounded px-3 py-2 mb-2">
+    <button class="btn btn-sm btn-link p-0 text-muted voto-btn" 
+            data-reporte="<?= $r->id ?>" 
+            data-tipo="up"
+            title="Me gusta">
+        <i class="ti ti-arrow-big-top fs-4"></i>
+    </button>
+    <span class="fw-bold voto-total" id="voto-total-<?= $r->id ?>">0</span>
+    <button class="btn btn-sm btn-link p-0 text-muted voto-btn" 
+            data-reporte="<?= $r->id ?>" 
+            data-tipo="down"
+            title="No me gusta">
+        <i class="ti ti-arrow-big-down fs-4"></i>
+    </button>
+</div>
+<br>
                                         <!-- Links  -->
                                         <a href="<?= PUBLIC_PATH ?>reportes/ver/<?= $r->id ?>" class="card-link">Ver Más</a>
                                         <a href="#!" class="card-link"
@@ -220,5 +237,90 @@
     function toggleComentarios(id) {
         let div = document.getElementById("comentarios-" + id);
         div.style.display = (div.style.display === "none") ? "block" : "none";
+    }
+    
+    // Sistema de votos
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Sistema de votos inicializado');
+        
+        // Cargar votos iniciales
+        document.querySelectorAll('.voto-total').forEach(function(span) {
+            const reporteId = span.id.replace('voto-total-', '');
+            cargarVotos(reporteId);
+        });
+        
+        // Manejar clicks en botones de voto
+        document.querySelectorAll('.voto-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const reporteId = this.dataset.reporte;
+                const tipo = this.dataset.tipo;
+                const valor = tipo === 'up' ? 1 : -1;
+                
+                console.log('Votando:', reporteId, valor);
+                votar(reporteId, valor, this);
+            });
+        });
+    });
+
+    function cargarVotos(reporteId) {
+        const url = '<?= PUBLIC_PATH ?>votos/obtener/' + reporteId;
+        console.log('Cargando votos desde:', url);
+        
+        fetch(url)
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Datos recibidos:', data);
+                if (data.success) {
+                    document.getElementById('voto-total-' + reporteId).textContent = data.total;
+                    actualizarColores(reporteId, data.total);
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar votos:', error);
+            });
+    }
+
+    function votar(reporteId, valor, btn) {
+        const url = '<?= PUBLIC_PATH ?>votos/votar/' + reporteId + '/' + valor;
+        console.log('Votando en:', url);
+        
+        fetch(url)
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                console.log('Respuesta del voto:', data);
+                if (data.success) {
+                    document.getElementById('voto-total-' + reporteId).textContent = data.total;
+                    actualizarColores(reporteId, data.total);
+                    
+                    // Animación del botón
+                    btn.classList.add('active');
+                    setTimeout(() => btn.classList.remove('active'), 200);
+                } else {
+                    alert(data.message || 'Error al votar');
+                }
+            })
+            .catch(error => {
+                console.error('Error al votar:', error);
+                alert('Error de conexión al votar');
+            });
+    }
+
+    function actualizarColores(reporteId, total) {
+        const span = document.getElementById('voto-total-' + reporteId);
+        span.classList.remove('text-success', 'text-danger', 'text-muted');
+        
+        if (total > 0) {
+            span.classList.add('text-success');
+        } else if (total < 0) {
+            span.classList.add('text-danger');
+        } else {
+            span.classList.add('text-muted');
+        }
     }
 </script>

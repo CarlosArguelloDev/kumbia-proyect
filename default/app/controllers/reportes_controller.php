@@ -1,16 +1,15 @@
 <?php
 class ReportesController extends AppController
 {
+    // Listado de reportes con filtros
     public function index()
     {
-        // Obtener parámetros de filtro
         $estado_id = Input::get('estado_id');
         $prioridad_id = Input::get('prioridad_id');
         $fecha_desde = Input::get('fecha_desde');
         $fecha_hasta = Input::get('fecha_hasta');
         $busqueda = Input::get('busqueda');
 
-        // Construir condiciones de filtro
         $conditions = [];
 
         if ($estado_id) {
@@ -34,22 +33,18 @@ class ReportesController extends AppController
             $conditions[] = "(titulo LIKE '%{$busqueda_safe}%' OR descripcion LIKE '%{$busqueda_safe}%' OR direccion LIKE '%{$busqueda_safe}%')";
         }
 
-        // Construir query
         $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
         $order = "order: created_at DESC";
 
-        // Obtener reportes filtrados
         if ($where) {
             $this->reportes = (new Reportes())->find($where, $order);
         } else {
             $this->reportes = (new Reportes())->find($order);
         }
 
-        // Obtener opciones para filtros
         $this->estados = (new Estados())->find();
         $this->prioridades = (new Prioridades())->find();
 
-        // Pasar valores de filtros actuales a la vista
         $this->filtros = [
             'estado_id' => $estado_id,
             'prioridad_id' => $prioridad_id,
@@ -62,15 +57,16 @@ class ReportesController extends AppController
         $this->subtitle = 'Listado de baches';
     }
 
+    // Listado de reportes atendidos
     public function atendidos()
     {
-        // Estado resuelto = id 3
         $this->reportes = (new Reportes())->find("conditions: estado_id = 3", "order: id desc");
         $this->title = 'Reportes Atendidos';
         $this->subtitle = 'Listado de baches';
     }
 
 
+    // Creación de reportes
     public function registrar()
     {
         Auth::require();
@@ -83,7 +79,7 @@ class ReportesController extends AppController
             $params = Input::post("reporte");
             $reporte = new Reportes($params);
 
-            $reporte->usuario_id = Auth::id(); // Usuario autenticado
+            $reporte->usuario_id = Auth::id();
             $reporte->estado_id = 1;
             $reporte->prioridad_id = 1;
 
@@ -116,9 +112,9 @@ class ReportesController extends AppController
         $this->subtitle = $this->reporte ? $this->reporte->titulo : 'Detalle del reporte';
     }
 
+    // Edición de reportes
     public function editar($id)
     {
-        // Requiere autenticación
         Auth::require();
 
         $this->reporte = (new Reportes())->find_first((int) $id);
@@ -128,7 +124,6 @@ class ReportesController extends AppController
             return Redirect::to("reportes/index");
         }
 
-        // Solo el dueño o un admin pueden editar
         if ($this->reporte->usuario_id != Auth::id() && !Auth::isAdmin()) {
             Flash::error('No tienes permisos para editar este reporte');
             return Redirect::to("reportes/index");
@@ -149,7 +144,6 @@ class ReportesController extends AppController
                     mkdir($dir, 0777, true);
                 }
 
-                // Eliminar foto anterior si existe
                 if (file_exists($dest)) {
                     unlink($dest);
                 }
@@ -166,20 +160,18 @@ class ReportesController extends AppController
         }
     }
 
+    // Mis reportes con filtros
     public function mis_reportes()
     {
-        // Requiere autenticación
         Auth::require();
         $usuario_id = Auth::id();
 
-        // Obtener parámetros de filtro
         $estado_id = Input::get('estado_id');
         $prioridad_id = Input::get('prioridad_id');
         $fecha_desde = Input::get('fecha_desde');
         $fecha_hasta = Input::get('fecha_hasta');
         $busqueda = Input::get('busqueda');
 
-        // Construir condiciones de filtro
         $conditions = ["usuario_id = $usuario_id"];
 
         if ($estado_id) {
@@ -203,14 +195,11 @@ class ReportesController extends AppController
             $conditions[] = "(titulo LIKE '%{$busqueda_safe}%' OR descripcion LIKE '%{$busqueda_safe}%' OR direccion LIKE '%{$busqueda_safe}%')";
         }
 
-        // Construir query
         $where = "conditions: " . implode(" AND ", $conditions);
         $order = "order: created_at DESC";
 
-        // Obtener reportes filtrados
         $this->reportes = (new Reportes())->find($where, $order);
 
-        // Obtener opciones para filtros
         $this->estados = (new Estados())->find();
         $this->prioridades = (new Prioridades())->find();
 
@@ -227,6 +216,7 @@ class ReportesController extends AppController
         $this->subtitle = 'Gestiona tus reportes';
     }
 
+    // Eliminación de reportes
     public function eliminar($id)
     {
         $reporte = (new Reportes())->find_first((int) $id);
@@ -237,7 +227,6 @@ class ReportesController extends AppController
         }
 
         if ($reporte->delete()) {
-            // Eliminar foto asociada si existe
             $foto_path = dirname(APP_PATH) . "/public/storage/reportes/{$reporte->id}.jpg";
             if (file_exists($foto_path)) {
                 unlink($foto_path);
@@ -251,22 +240,17 @@ class ReportesController extends AppController
         return Redirect::to("reportes/mis_reportes");
     }
 
-    /**
-     * Vista de administración de reportes
-     */
+    // Administración de reportes
     public function admin()
     {
-        // Solo administradores pueden gestionar reportes
         Auth::requireAdmin();
 
-        // Obtener parámetros de filtro
         $estado_id = Input::get('estado_id');
         $prioridad_id = Input::get('prioridad_id');
         $fecha_desde = Input::get('fecha_desde');
         $fecha_hasta = Input::get('fecha_hasta');
         $busqueda = Input::get('busqueda');
 
-        // Construir condiciones de filtro
         $conditions = [];
 
         if ($estado_id) {
@@ -290,22 +274,18 @@ class ReportesController extends AppController
             $conditions[] = "(titulo LIKE '%{$busqueda_safe}%' OR descripcion LIKE '%{$busqueda_safe}%' OR direccion LIKE '%{$busqueda_safe}%')";
         }
 
-        // Construir query
         $where = count($conditions) > 0 ? "conditions: " . implode(" AND ", $conditions) : "";
         $order = "order: created_at DESC";
 
-        // Obtener reportes filtrados
         if ($where) {
             $this->reportes = (new Reportes())->find($where, $order);
         } else {
             $this->reportes = (new Reportes())->find($order);
         }
 
-        // Obtener opciones para filtros
         $this->estados = (new Estados())->find();
         $this->prioridades = (new Prioridades())->find();
 
-        // Pasar valores de filtros actuales a la vista
         $this->filtros = [
             'estado_id' => $estado_id,
             'prioridad_id' => $prioridad_id,
